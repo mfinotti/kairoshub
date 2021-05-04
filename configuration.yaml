@@ -1,0 +1,46 @@
+default_config:
+
+#### python scripts extension. Python scripts goes on folder /python_scripts
+python_script:
+
+#### HA Custom Events extension 
+#### including configuration files
+ha-custom-events: !include_dir_merge_named hakairos-configuration/hacustomevents/
+
+#### HA Kafka extension
+#### including configuration files
+hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
+
+#### input text entities
+input_text:
+  system_code:
+    name: Identificativo Sistema
+    initial: "numberToChange"
+
+##### input boolean entities 
+input_boolean:
+  kafka_integration:
+    initial: true
+
+#### hassio groups
+#### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
+group:
+  kafka_entity_align:
+    name: "Kafka entity group"
+    entities:
+ 
+
+#### include kairos core automations
+automation kairos: !include_dir_merge_list hakairos-configuration/automations/
+
+#### automations
+automation: 
+
+
+#### logger configuration
+logger:
+  default: info
+  logs:
+    homeassistant.components.cloud: debug
+    custom_components.hakafka: info
+    custom_components.ha-custom-events: info
