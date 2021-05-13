@@ -1,46 +1,389 @@
 default_config:
 
-#### python scripts extension. Python scripts goes on folder /python_scripts
 python_script:
 
-#### HA Custom Events extension 
-#### including configuration files
 ha-custom-events: !include_dir_merge_named hakairos-configuration/hacustomevents/
 
-#### HA Kafka extension
-#### including configuration files
 hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
 
-#### input text entities
 input_text:
   system_code:
     name: Identificativo Sistema
-    initial: "numberToChange"
+    initial: "000001"
 
-##### input boolean entities 
 input_boolean:
   kafka_integration:
     initial: true
+  pump:
+    name: Pompa
+    initial: off
+  pump_line_1:
+    name: Linea 1
+    initial: off
+  pump_line_2:
+    name: Linea 2
+    initial: off
+  pump_anomaly:
+    name: Simula Anomalia pompa
+    initial: off
 
-#### hassio groups
-#### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
+sensor:
+  - platform: mqtt
+    name: "Umidità terreno settore 1"
+    unique_id: sector1_humidity_sensor
+    state_topic: "shellies/line_1/ext_humidity/0"
+    device_class: humidity
+  - platform: mqtt
+    name: "Temperatura Settore 1"
+    unique_id: sector1_temperature_sensor
+    state_topic: "shellies/line_1/ext_temperature/0"
+    device_class: temperature
+  - platform: mqtt
+    name: "Temperatura Settore 2"
+    unique_id: sector2_temperature_sensor
+    state_topic: "shellies/line_2/ext_temperature/0"
+    device_class: temperature
+  - platform: mqtt
+    name: "Umidita terreno settore 2"
+    unique_id: sector2_humidity_sensor
+    state_topic: "shellies/line_2/adc/0"
+    device_class: humidity
+
+binary_sensor:
+  - platform: mqtt
+    name: Anomalia linea 1
+    platform: mqtt
+    state_topic: "shellies/kairos_anomalia/input/1"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: Anomalia linea 2
+    platform: mqtt
+    state_topic: "shellies/kairos_anomalia/input/2"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: Anomalia pompa
+    platform: mqtt
+    state_topic: "shellies/kairos_anomalia/input/0"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: template
+    sensors:
+      anomaly:
+        friendly_name: Anomalie
+        device_class: problem
+        value_template: >-
+          {% if is_state('binary_sensor.anomalia_pompa', 'on') or is_state('binary_sensor.anomalia_linea_1', 'on') or is_state('binary_sensor.anomalia_linea_2', 'on')
+          %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      pump:
+        friendly_name: Pompa
+        device_class: power
+        value_template: >-
+          {% if is_state('binary_sensor.line_1_state', 'on') or is_state('binary_sensor.line_2_state', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      line_1_state:
+          friendly_name: Linea 1
+          device_class: power
+          value_template: >-
+            {% if is_state('switch.linea_1', 'on')
+            %}
+              on
+            {% else %}
+              off
+            {% endif %}
+      line_2_state:
+          friendly_name: Linea 2
+          device_class: power
+          value_template: >-
+            {% if is_state('switch.linea_2', 'on')
+            %}
+              on
+            {% else %}
+              off
+            {% endif %}
+      aereazione_state:
+          friendly_name: Aereazione serra
+          device_class: power
+          value_template: >-
+            {% if is_state('switch.aereazione', 'on') %}
+              on
+            {% else %}
+              off
+            {% endif %}
+      unidita_settore_2_state:
+          friendly_name: Umidità terreno settore 2
+          device_class: problem
+          value_template: >-
+            {% set humidity2Value = states('sensor.umidita_terreno_settore_2') | float %}
+            {% if humidity2Value  < 1 %}
+              off
+            {% else %}
+              on
+            {% endif %}
+      unidita_settore_1_state:
+          friendly_name: Umidità terreno settore 1
+          device_class: problem
+          value_template: >-
+            {% set humidity1Value = states('sensor.umidita_terreno_settore_1') | int %}
+            {% if humidity1Value  < 60 %}
+              on
+            {% else %}
+              off
+            {% endif %}
+      temperatura_settore_2_state:
+          friendly_name: Temperatura settore 2
+          device_class: problem
+          value_template: >-
+            {% set temperature2Value = states('sensor.temperatura_settore_2') | int %}
+            {% if temperature2Value  > 22 %}
+              on
+            {% else %}
+              off
+            {% endif %}
+
+
+#tts:
+#  - platform: google_translate
+
 group:
   kafka_entity_align:
     name: "Kafka entity group"
     entities:
- 
+      - binary_sensor.aereazione_state
+      - binary_sensor.anomalia_linea_1
+      - binary_sensor.pump
+      - input_text.system_code
+      - input_boolean.pump_line_2
+      - input_boolean.pump_line_1
+      - binary_sensor.anomalia_linea_2
+      - binary_sensor.unidita_settore_2_state
+      - binary_sensor.updater
+      - binary_sensor.anomalia_pompa
 
-#### include kairos core automations
-automation kairos: !include_dir_merge_list hakairos-configuration/automations/
 
-#### automations
-automation: 
+#script: !include scripts.yaml
+#scene: !include scenes.yaml
 
-
-#### logger configuration
 logger:
   default: info
   logs:
     homeassistant.components.cloud: debug
     custom_components.hakafka: info
     custom_components.ha-custom-events: info
+
+automation kairos: !include_dir_merge_list hakairos-configuration/automations/
+
+automation:
+  - alias: "Pump Line 1 on"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.unidita_settore_1_state
+      to: "on"
+    condition:
+      alias: "Accendi linea 1 se non ci sono anomalie e se l'umidità del settore 1 è bassa"
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.unidita_settore_1_state
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.anomaly
+          state: "off"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.linea_2
+      - service: switch.turn_on
+        data:
+          entity_id:
+            - switch.linea_1
+      - service: input_boolean.turn_on
+        data:
+          entity_id:
+            - input_boolean.pump
+      - event: TO_OUTBOUND_EVENT
+        event_data:
+          entityId: input_boolean.pump_line_1
+          type: NOTICE
+          message: "Irrigazione Linea 1 Accesa"
+  - alias: "Pump Line 1 off"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.unidita_settore_1_state
+      to: "off"
+    action:
+      - service: switch.turn_off
+        data:
+          entity_id:
+            - switch.linea_1
+      - service: input_boolean.turn_off
+        data:
+          entity_id:
+            - input_boolean.pump
+      - event: TO_OUTBOUND_EVENT # invocare un evento interno invece che direttamente l'outbound. Prevedere anche uno switch se abilitare o meno l'evento
+        event_data:
+          entityId: input_boolean.pump_line_1
+          type: NOTICE
+          message: "Irrigazione Linea 1 Spenta"
+  - alias: "Pump Line 2 on"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.unidita_settore_2_state
+      to: "on"
+    condition:
+      alias: "Accendi linea 2 se non ci sono anomalie e se l'umidità del settore 2 è bassa"
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.unidita_settore_2_state
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.anomaly
+          state: "off"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.linea_1
+      - service: switch.turn_on
+        data:
+          entity_id:
+            - switch.linea_2
+      - service: input_boolean.turn_on
+        data:
+          entity_id:
+            - input_boolean.pump
+      - event: TO_OUTBOUND_EVENT
+        event_data:
+          entityId: input_boolean.pump_line_2
+          type: NOTICE
+          message: "Irrigazione Linea 2 Accesa"
+  - alias: "Pump Line 2 off"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.unidita_settore_2_state
+      to: "off"
+    action:
+      - service: switch.turn_off
+        data:
+          entity_id:
+            - switch.linea_2
+      - service: input_boolean.turn_off
+        data:
+          entity_id:
+            - input_boolean.pump
+      - event: TO_OUTBOUND_EVENT # invocare un evento interno invece che direttamente l'outbound. Prevedere anche uno switch se abilitare o meno l'evento
+        event_data:
+          entityId: input_boolean.pump_line_2
+          type: NOTICE
+          message: "Irrigazione Linea 2 Spenta"
+  - alias: "Spegni irrigazione event"
+    trigger:
+      platform: event
+      event_type: spegniIrrigazioneEvent
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_1
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_2
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_anomaly
+  - alias: "Anomalia ON"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anomaly
+        to: "on"
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.anomalia_pompa
+      - service: switch.turn_off
+        data:
+          entity_id:
+            - switch.linea_2
+            - switch.linea_1
+  - alias: "Anomalia OFF"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anomaly
+        to: "off"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.anomalia_pompa
+  - alias: "Areazione Serra OFF"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.temperatura_settore_2_state
+        to: 'off'
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.aereazione
+  - alias: "Aereazione Serra ON"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.temperatura_settore_2_state
+        to: 'on'
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.aereazione
+
+switch:
+  - platform: mqtt
+    name: "Anomalia pompa"
+    unique_id: "pump_anomaly_led"
+    state_topic: "shellies/anomalia_pompa/relay/0"
+    command_topic: "shellies/anomalia_pompa/relay/0/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: "Linea 1"
+    unique_id: "line1"
+    state_topic: "shellies/line_1/relay/0"
+    command_topic: "shellies/line_1/relay/0/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: "Linea 2"
+    unique_id: "line2"
+    state_topic: "shellies/line_2/relay/1"
+    command_topic: "shellies/line_2/relay/1/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: "Aereazione"
+    unique_id: "aereazione"
+    state_topic: "shellies/line_2/relay/0"
+    command_topic: "shellies/line_2/relay/0/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
