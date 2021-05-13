@@ -9,7 +9,7 @@ hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
 input_text:
   system_code:
     name: Identificativo Sistema
-    initial: "000001"
+    initial: "000000"
 
 input_boolean:
   kafka_integration:
