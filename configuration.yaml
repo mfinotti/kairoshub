@@ -3,6 +3,10 @@ default_config:
 #### python scripts extension. Python scripts goes on folder /python_scripts
 python_script:
 
+recorder:
+  purge_keep_days: 21
+  db_url: sqlite:////home/homeassistant/.homeassistant/home-assistant_v2.db
+
 #### HA Custom Events extension 
 #### including configuration files
 ha-custom-events: !include_dir_merge_named hakairos-configuration/hacustomevents/
@@ -15,27 +19,412 @@ hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
 input_text:
   system_code:
     name: Identificativo Sistema
-    initial: "numberToChange"
+    initial: "000001"
+  system_name: 
+    name: Nome impianto
 
+##### input number entities
+input_number:
+  metrics_frequency:
+    name: Frequenza aggiornamento
+    initial: 6
+    min: 1
+    max: 24
+    step: 1
+    
 ##### input boolean entities 
 input_boolean:
   kafka_integration:
     initial: true
 
+#### binary sensor entities:
+binary_sensor:
+  - platform: mqtt
+    name: pump
+    platform: mqtt
+    state_topic: "shellies/sensor-group1/input/0"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: pump_load
+    platform: mqtt
+    state_topic: "shellies/sensor-group1/input/1"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: blackout
+    platform: mqtt
+    state_topic: "shellies/sensor-group1/input/2"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: water_on_land
+    platform: mqtt
+    state_topic: "shellies/sensor-group2/input/0"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: solenoid_valve_1
+    platform: mqtt
+    state_topic: "shellies/sensor-group2/input/1"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: solenoid_valve_2
+    platform: mqtt
+    state_topic: "shellies/sensor-group2/input/2"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: template
+    sensors:
+      sensor_anomaly:
+        friendly_name: Anomalie
+        device_class: problem
+        delay_on: "0:00:10"
+        delay_off: "0:00:10"
+        value_template: >-
+          {% if is_state('binary_sensor.pump_load', 'on') or is_state('binary_sensor.blackout', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      sensor_solenoid_valve_1:
+        friendly_name: Elettrovalvola 1
+        device_class: power
+        delay_on: "0:00:10"
+        delay_off: "0:00:10"        
+        value_template: >-
+          {% if is_state('binary_sensor.solenoid_valve_1', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      sensor_solenoid_valve_2:
+        friendly_name: Elettrovalvola 2
+        delay_on: "0:00:10"
+        delay_off: "0:00:10"
+        device_class: power
+        value_template: >-
+          {% if is_state('binary_sensor.solenoid_valve_2', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      sensor_water_on_land:
+        friendly_name: Acqua valle
+        device_class: moisture
+        delay_on: "0:00:10"
+        delay_off: "0:00:10" 
+        value_template: >-
+          {% if is_state('binary_sensor.blackout', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      sensor_blackout:
+        friendly_name: Assenza corrente
+        device_class: problem
+        delay_on: "0:00:10"
+        delay_off: "0:00:10"        
+        value_template: >-
+          {% if is_state('binary_sensor.blackout', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      sensor_pump_state:
+        friendly_name: Accensione pompa
+        device_class: power
+        delay_on: "0:00:10"
+        delay_off: "0:00:10"        
+        value_template: >-
+          {% if is_state('binary_sensor.pump', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      sensor_pump_load:
+        friendly_name: Termico pompa
+        device_class: problem
+        delay_on: "0:00:10"
+        delay_off: "0:00:10"        
+        value_template: >-
+          {% if is_state('binary_sensor.pump_load', 'on')  %}
+            on
+          {% else %}
+            off
+          {% endif %}
+
+
+sensor:
+  - platform: mqtt
+    name: humidity_sensor
+    state_topic: "shellies/sensor_group3/ext_humidity/0"
+    device_class: humidity
+  - platform: mqtt
+    name: temperature_sensor
+    state_topic: "shellies/sensor_group3/ext_temperature/0"
+    device_class: temperature
+  - platform: mqtt
+    name: load_phase_1
+    state_topic: "shellies/load_sensor/emeter/0/power"
+    device_class: power
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: load_phase_2
+    state_topic: "shellies/load_sensor/emeter/1/power"
+    device_class: power
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: load_phase_3
+    state_topic: "shellies/load_sensor/emeter/2/power"
+    device_class: power
+    unit_of_measurement: "W"
+  - platform: template
+    sensors:
+      energy_total:
+        friendly_name: 'Consumo totale'
+        value_template: "{{ (states('sensor.load_phase_1')|float + states('sensor.load_phase_2')|float + states('sensor.load_phase_3')|float)|round(3) }}"
+        unit_of_measurement: "kWh"
+      temperature_status:
+        value_template: >-
+          {% if states('sensor.temperature_sensor')|int < 0 %}
+            extremely_cold
+          {% elif states('sensor.temperature_sensor')|int > 0 and states('sensor.temperature_sensor')|int <= 6 %}
+            cold
+          {% elif states('sensor.temperature_sensor')|int > 5 and states('sensor.temperature_sensor')|int <= 20 %}
+            normal
+          {% elif states('sensor.temperature_sensor')|int > 20 and states('sensor.temperature_sensor')|int <= 30 %}
+            hot
+          {% else %}
+            extremely_hot
+          {% endif %}
+
+
+#### entity's customizations
+homeassistant:
+  customize:
+    sensor.consumo_fase_3:
+      entity_id: sensor.load_phase_3
+      
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
 group:
   kafka_entity_align:
     name: "Kafka entity group"
     entities:
+  entity_metrics:
+    name: "Metrics group"
+    entities:
+      - sensor.humidity_sensor
+      - sensor.load_phase_1
+      - sensor.load_phase_2
+      - sensor.load_phase_3
  
 
 #### include kairos core automations
 automation kairos: !include_dir_merge_list hakairos-configuration/automations/
 
 #### automations
-automation: 
-
+automation:
+  - alias: Spegni irrigazione Linea 1
+    trigger:
+      - platform: event
+        event_type: line1OffCommand
+    # condition:
+    #   - condition: state
+    #     entity_id: "input_boolean.kafka_integration"
+    #     state: "on"
+    action:
+      service: notify.notify
+      data:
+        message: "Irrigazione linea 1 spenta"
+        title: "Notifica automazione"
+  - alias: Alert temperatura Freddo
+    trigger:
+      - platform: state
+        entity_id: sensor.temperature_status
+        to: cold
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor
+          threshold: NOTICE_TEMPERATURA_BASSA_1
+  - alias: Alert temperatura Freddo estremo
+    trigger:
+      - platform: state
+        entity_id: sensor.temperature_status
+        to: extremely_cold
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor
+          threshold: ALERT_TEMPERATURA_BASSA_2
+  - alias: Alert temperatura Caldo estremo
+    trigger:
+      - platform: state
+        entity_id: sensor.temperature_status
+        to: extremely_hot
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor
+          threshold: ALERT_TEMPERATURA_ALTA_2
+  - alias: Alert sicurezza pompa ON
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.pump_load
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.pump_load
+          threshold: ALERT_PUMP_LOAD
+  - alias: Alert sicurezza pompa OFF
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.pump_load
+        from: "on"
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.pump_load
+          threshold: NOTICE_PUMP_LOAD_OFF
+  - alias: Alert blackout ON
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.blackout
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.blackout
+          threshold: ALERT_BLACKOUT
+  - alias: Alert blackout OFF
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.blackout
+        from: "on"
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.blackout
+          threshold: NOTICE_BLACKOUT_OFF
+  - alias: Irrigazione linea 1 ON
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.sensor_solenoid_valve_1
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.sensor_solenoid_valve_1
+          threshold: NOTICE_LINE_1_ON
+  - alias: Irrigazione linea 1 OFF
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.sensor_solenoid_valve_1
+        from: "on"
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.sensor_solenoid_valve_1
+          threshold: NOTICE_LINE_1_OFF
+  - alias: Irrigazione linea 2 ON
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.sensor_solenoid_valve_2
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.sensor_solenoid_valve_2
+          threshold: NOTICE_LINE_2_ON
+  - alias: Irrigazione linea 2 OFF
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.sensor_solenoid_valve_2
+        from: "on"
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.sensor_solenoid_valve_2
+          threshold: NOTICE_LINE_2_OFF
+  - alias: Alert acqua valle 
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.sensor_solenoid_valve_2
+        to: "on"
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+      - condition: state
+        entity_id: "binary_sensor.sensor_water_on_land"
+        state: "off"
+        for:
+          minutes: 10
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.sensor_water_on_land
+          threshold: ALERT_WATER_ON_LAND
+          
 
 #### logger configuration
 logger:
@@ -44,3 +433,7 @@ logger:
     homeassistant.components.cloud: debug
     custom_components.hakafka: info
     custom_components.ha-custom-events: info
+
+shell_command:
+  entity_metrics: "python3 /home/homeassistant/.homeassistant/hakairos-configuration/scripts/entityMetrics.py"
+  system_metrics: "python3 /home/homeassistant/.homeassistant/hakairos-configuration/scripts/systemMetrics.py"
