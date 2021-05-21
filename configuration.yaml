@@ -122,7 +122,7 @@ binary_sensor:
         delay_on: "0:00:10"
         delay_off: "0:00:10" 
         value_template: >-
-          {% if is_state('binary_sensor.blackout', 'on') %}
+          {% if is_state('binary_sensor.water_on_land', 'on') %}
             on
           {% else %}
             off
@@ -167,10 +167,12 @@ sensor:
     name: humidity_sensor
     state_topic: "shellies/sensor_group3/ext_humidity/0"
     device_class: humidity
+    unit_of_measurement: "%"
   - platform: mqtt
     name: temperature_sensor
     state_topic: "shellies/sensor_group3/ext_temperature/0"
     device_class: temperature
+    unit_of_measurement: "°C"
   - platform: mqtt
     name: load_phase_1
     state_topic: "shellies/load_sensor/emeter/0/power"
@@ -219,10 +221,14 @@ group:
   kafka_entity_align:
     name: "Kafka entity group"
     entities:
+      - sensor.humidity_sensor
+      - sensor.temperature_sensor
+      - sensor.energy_total
   entity_metrics:
     name: "Metrics group"
     entities:
       - sensor.humidity_sensor
+      - sensor.temperature_sensor
       - sensor.load_phase_1
       - sensor.load_phase_2
       - sensor.load_phase_3
