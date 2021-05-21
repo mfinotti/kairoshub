@@ -3,6 +3,10 @@ default_config:
 #### python scripts extension. Python scripts goes on folder /python_scripts
 python_script:
 
+recorder:
+  purge_keep_days: 21
+  db_url: sqlite:////home/homeassistant/.homeassistant/home-assistant_v2.db
+
 #### HA Custom Events extension 
 #### including configuration files
 ha-custom-events: !include_dir_merge_named hakairos-configuration/hacustomevents/
@@ -16,7 +20,18 @@ input_text:
   system_code:
     name: Identificativo Sistema
     initial: "numberToChange"
+  system_name: 
+    name: Nome impianto
 
+##### input number entities
+input_number:
+  metrics_frequency:
+    name: Frequenza aggiornamento
+    initial: 6
+    min: 1
+    max: 24
+    step: 1
+    
 ##### input boolean entities 
 input_boolean:
   kafka_integration:
@@ -44,3 +59,7 @@ logger:
     homeassistant.components.cloud: debug
     custom_components.hakafka: info
     custom_components.ha-custom-events: info
+
+shell_command:
+  entity_metrics: "python3 /home/homeassistant/.homeassistant/hakairos-configuration/scripts/entityMetrics.py"
+  system_metrics: "python3 /home/homeassistant/.homeassistant/hakairos-configuration/scripts/systemMetrics.py"
