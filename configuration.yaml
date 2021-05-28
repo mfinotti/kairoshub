@@ -19,15 +19,15 @@ hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
 input_text:
   system_code:
     name: Identificativo Sistema
-    initial: "numberToChange"
+    initial: "999999"
   system_name: 
-    name: Nome impianto
+    name: Kairos green DEMO
 
 ##### input number entities
 input_number:
   metrics_frequency:
     name: Frequenza aggiornamento
-    initial: 6
+    initial: 24
     min: 1
     max: 24
     step: 1
@@ -36,6 +36,62 @@ input_number:
 input_boolean:
   kafka_integration:
     initial: true
+  pump:
+    name: Pompa
+    initial: off
+  pump_line_1:
+    name: Linea 1
+    initial: off
+  pump_line_2:
+    name: Linea 2
+    initial: off
+  pump_anomaly:
+    name: Simula Anomalia pompa
+    initial: off
+
+binary_sensor:
+  platform: template
+  sensors:
+    anomaly:
+      friendly_name: Anomalie
+      device_class: problem
+      value_template: >-
+        {% if is_state('input_boolean.pump_anomaly', 'on')
+        %}
+          on
+        {% else %}
+          off
+        {% endif %}
+    pump_state:
+      friendly_name: Pompa
+      device_class: power
+      value_template: >-
+        {% if is_state('input_boolean.pump', 'on')
+        %}
+          on
+        {% else %}
+          off
+        {% endif %}
+    line_1_state:
+      friendly_name: Linea 1
+      device_class: power
+      value_template: >-
+        {% if is_state('input_boolean.pump_line_1', 'on')
+        %}
+          on
+        {% else %}
+          off
+        {% endif %}
+    line_2_state:
+      friendly_name: Linea 2
+      device_class: power
+      value_template: >-
+        {% if is_state('input_boolean.pump_line_2', 'on')
+        %}
+          on
+        {% else %}
+          off
+        {% endif %}
 
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
@@ -43,13 +99,160 @@ group:
   kafka_entity_align:
     name: "Kafka entity group"
     entities:
+      - group.line_group
+      - group.anomaly_group
+  line_group:
+    name: "Irrigazione"
+    entities:
+      - binary_sensor.pump_state
+      - binary_sensor.line_1_state
+      - binary_sensor.line_2_state
+  anomaly_group:
+    name: "Anomalie"
+    entities:
+      - binary_sensor.anomaly
  
 
 #### include kairos core automations
 automation kairos: !include_dir_merge_list hakairos-configuration/automations/
 
 #### automations
-automation: 
+automation:
+  - alias: "Pump Line 1 on"
+    trigger:
+      platform: state
+      entity_id: input_boolean.pump_line_1
+      to: "on"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_2
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.pump
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.pump_line_1
+          threshold: LINE_1_ON
+          message: "Irrigazione Linea 1 Accesa"
+  - alias: Pump line 1 off EVENT
+    trigger: 
+      platform: event
+      event_type: automationEventOffLine1
+    action: 
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_1
+  - alias: Pump line 1 on EVENT
+    trigger: 
+      platform: event
+      event_type: automationEventOnLine1
+    action: 
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.pump_line_1
+  - alias: Pump line 2 off EVENT
+    trigger: 
+      platform: event
+      event_type: automationEventOffLine2
+    action: 
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_2
+  - alias: Pump line 2 on EVENT
+    trigger: 
+      platform: event
+      event_type: automationEventOnLine2
+    action: 
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.pump_line_2
+  - alias: "Pump Line 1 off"
+    trigger:
+      platform: state
+      entity_id: input_boolean.pump_line_1
+      to: "off"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_1
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.pump_line_1
+          threshold: LINE_1_OFF
+          message: "Irrigazione Linea 1 Spenta"
+  - alias: "Pump Line 2 on"
+    trigger:
+      platform: state
+      entity_id: input_boolean.pump_line_2
+      to: "on"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_1
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.pump
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.pump_line_2
+          threshold: LINE_2_ON
+          message: "Irrigazione Linea 2 Accesa"
+  - alias: "Pump Line 2 off"
+    trigger:
+      platform: state
+      entity_id: input_boolean.pump_line_2
+      to: "off"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_2
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.pump_line_2
+          threshold: LINE_2_OFF
+          message: "Irrigazione Linea 2 Spenta"
+  - alias: "simula anomalia"
+    trigger:
+      platform: state
+      entity_id: input_boolean.pump_anomaly
+      to: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.pump_anomaly
+          threshold: ALERT_PUMP_ANOMALY
+          message: "Si è verificata un'anomalia sulla pompa"
+  - alias: "Spegni irrigazione event"
+    trigger:
+      platform: event
+      event_type: automationEventOffPump
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_1
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_line_2
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.pump_anomaly
+  - alias: Hassio start routine
+    trigger:
+      event: start
+      platform: homeassistant
+    action:
+      - delay: 00:00:30
+      - event: kafka_start_consuming 
 
 
 #### logger configuration
