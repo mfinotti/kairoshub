@@ -190,21 +190,29 @@ sensor:
     unit_of_measurement: "W"
   - platform: template
     sensors:
-      load_phase_1:
+      humidity_sensor_value:
+        unit_of_measurement: "%"
+        friendly_name: "Umidità"
+        value_template: "{{ states('sensor.humidity_sensor')|int  }}"
+      temperature_sensor_value:
+        unit_of_measurement: "°C"
+        friendly_name: "Temperatura"
+        value_template: "{{ states('sensor.temperature_sensor')|int  }}"
+      load_phase_1_value:
         friendly_name: "Consumo fase 1"
         value_template: "{{ states('sensor.load_phase_1')|float }}"
         unit_of_measurement: "W"
-      load_phase_2:
+      load_phase_2_value:
         friendly_name: "Consumo fase 2"
         value_template: "{{ states('sensor.load_phase_2')|float }}"
         unit_of_measurement: "W"
-      load_phase_3:
+      load_phase_3_value:
         friendly_name: "Consumo fase 3"
         value_template: "{{ states('sensor.load_phase_3')|float }}"
         unit_of_measurement: "W"
-      energy_total:
+      energy_total_value:
         friendly_name: 'Consumo totale'
-        value_template: "{{ (states('sensor.load_phase_1')|float + states('sensor.load_phase_2')|float + states('sensor.load_phase_3')|float) / 1000 |round(3) }}"
+        value_template: "{{ ((states('sensor.load_phase_1')|float + states('sensor.load_phase_2')|float + states('sensor.load_phase_3')|float) / 1000)|round(2) }}"
         unit_of_measurement: "kWh"
       temperature_status:
         value_template: >-
@@ -253,15 +261,15 @@ group:
   load_group: 
     name: "Consumi"
     entities: 
-      - sensor.energy_total
-      - sensor.load_phase_1
-      - sensor.load_phase_2
-      - sensor.load_phase_3  
+      - sensor.energy_total_value
+      - sensor.load_phase_1_value
+      - sensor.load_phase_2_value
+      - sensor.load_phase_3_value  
   env_group: 
     name: "Ambiente"
     entities: 
-      - sensor.humidity_sensor
-      - sensor.temperature_sensor
+      - sensor.humidity_sensor_value
+      - sensor.temperature_sensor_value
  
 
 #### include kairos core automations
@@ -294,7 +302,7 @@ automation:
     action:
       - event: HA_EVENT
         event_data:
-          target: sensor.temperature_sensor
+          target: sensor.temperature_sensor_value
           threshold: NOTICE_TEMPERATURA_BASSA_1
   - alias: Alert temperatura Freddo estremo
     trigger:
@@ -308,7 +316,7 @@ automation:
     action:
       - event: HA_EVENT
         event_data:
-          target: sensor.temperature_sensor
+          target: sensor.temperature_sensor_value
           threshold: ALERT_TEMPERATURA_BASSA_2
   - alias: Alert temperatura Caldo estremo
     trigger:
@@ -322,7 +330,7 @@ automation:
     action:
       - event: HA_EVENT
         event_data:
-          target: sensor.temperature_sensor
+          target: sensor.temperature_sensor_value
           threshold: ALERT_TEMPERATURA_ALTA_2
   - alias: Alert sicurezza pompa ON
     trigger:
