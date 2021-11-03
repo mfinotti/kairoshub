@@ -25,7 +25,7 @@ input_text:
     name: Identificativo Sistema
     initial: "numberToChange"
   system_name: 
-    name: Nome impianto
+    name: Agricola Futura
 
 ##### input number entities
 input_number:
@@ -35,11 +35,347 @@ input_number:
     min: 1
     max: 24
     step: 1
+  s7OpenCloseTimeWindowLow:
+    name: "Serra 7 - Tempo apertura / chiusura finestre basse"
+    initial: 50
+    min: 1
+    max: 120
+    step: 1
+  s7OpenCloseTimeWindowTop:
+    name: "Serra 7 - Tempo apertura / chiusura colmi"
+    initial: 105
+    min: 1
+    max: 120
+    step: 1
     
 ##### input boolean entities 
 input_boolean:
   kafka_integration:
     initial: true
+  s7WindowTopAutomation:
+  s7WindowLowAutomation:
+    
+
+sensor:
+  # finestre
+  - platform: mqtt
+    name: "Serra 7 - Laterale SX"
+    unique_id: s7WindowLeftSide1
+    state_topic: "shellies/s7WindowLeftSide1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Laterale DX"
+    unique_id: s7WindowRightSide1
+    state_topic: "shellies/s7WindowRightSide1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Frontale SX Mare"
+    unique_id: s7WindowFrontSeaSideLx1
+    state_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Frontale DX Mare"
+    unique_id: s7WindowFrontSeaSideRx1
+    state_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Frontale SX Monte"
+    unique_id: s7WindowFrontMountainSideLx1
+    state_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Frontale DX Monte"
+    unique_id: s7WindowFrontMountainSideRx1
+    state_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Colmo 1"
+    unique_id: s7WindowTop1
+    state_topic: "shellies/s7WindowTop1/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Colmo 2"
+    unique_id: s7WindowTop2
+    state_topic: "shellies/s7WindowTop2/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Colmo 4" #3 e 4 sono invertiti
+    unique_id: s7WindowTop3
+    state_topic: "shellies/s7WindowTop3/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  - platform: mqtt
+    name: "Serra 7 - Colmo 3" #3 e 4 sono invertiti
+    unique_id: s7WindowTop4
+    state_topic: "shellies/s7WindowTop4/roller/0/pos"
+    unit_of_measurement: "%"
+    icon: mdi:percent
+  # temperatura / umidità
+  - platform: mqtt #TODO: DA rivedere nomi
+    name: "s7Humidity_sensor"
+    state_topic: "shellies/XXXXXXX/ext_humidity/0"
+    device_class: humidity
+  - platform: mqtt
+    name: s7Temperature_sensor
+    state_topic: "shellies/YYYYYYY/ext_temperature/0"
+    device_class: temperature 
+  # sensor template
+  - platform: template #TODO: DA rivedere range di valori
+    sensors:
+      s7TemperatureState:
+        value_template: >-
+          {% if states('sensor.temperature_sensor')|int < 0 %}
+            TEMP_EXTREMELY_LOW
+          {% elif states('sensor.temperature_sensor')|int > 0 and states('sensor.temperature_sensor')|int <= 6 %}
+            TEMP_LOW
+          {% elif states('sensor.temperature_sensor')|int > 5 and states('sensor.temperature_sensor')|int <= 20 %}
+            TEMP_NORMAL
+          {% elif states('sensor.temperature_sensor')|int > 20 and states('sensor.temperature_sensor')|int <= 28 %}
+            TEMP_HIGH
+          {% else %}
+            TEMP_EXTREMELY_HIGH
+          {% endif %}
+      s7HumidityState: #TODO: rivedere nome e classificazione
+        value_template: >-
+          {% if states('sensor.temperature_sensor')|int < 0 %}
+            extremely_cold
+          {% elif states('sensor.temperature_sensor')|int > 0 and states('sensor.temperature_sensor')|int <= 6 %}
+            cold
+          {% elif states('sensor.temperature_sensor')|int > 5 and states('sensor.temperature_sensor')|int <= 20 %}
+            normal
+          {% elif states('sensor.temperature_sensor')|int > 20 and states('sensor.temperature_sensor')|int <= 28 %}
+            hot
+          {% else %}
+            extremely_hot
+          {% endif %}
+      s7Temperature:
+        friendly_name: "Temperatura"
+        value_template: "{{ states('sensor.temperature_sensor')|int }}" #TODO: rivedere nome
+        unit_of_measurement: "°c"
+      s7Humidity:
+        friendly_name: "Umidità"
+        value_template: "{{ states('sensor.temperature_sensor')|int }}" #TODO: rivedere nome
+        unit_of_measurement: "°c"
+      #TODO: da vedere integrazione con stazione meteo
+      wRainState:
+        value_template: >-
+          {% if states('sensor.temperature_sensor') == TODO %}
+            WE_RAINING
+          {% else %}
+            WE_NOT_RAINING
+          {% endif %}
+      wWindFromState: 
+        value_template: >-
+          {% if states('sensor.temperature_sensor') == TODO %}
+            WE_WIND_NONE
+          {% elif states('sensor.temperature_sensor') == TODO %}
+            WE_WIND_SEA
+          {% else %}
+            WE_WIND_HILL
+          {% endif %}
+
+
+binary_sensor:
+  - platform: mqtt
+    name: s7Blackout  #TODO: Da rivedere nomi e topic
+    platform: mqtt
+    state_topic: "shellies/kairos_anomalia/input/1"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: Anomalia  #TODO: Da rivedere nomi e topic
+    platform: mqtt
+    state_topic: "shellies/kairos_anomalia/input/1"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt
+    name: Anomalia  #TODO: Da rivedere nomi e topic
+    platform: mqtt
+    state_topic: "shellies/kairos_anomalia/input/1"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+
+cover:
+  - platform: mqtt
+    unique_id: "s7WindowLeftSide1"
+    name: "Serra 7 - Laterale SX"
+    command_topic: "shellies/s7WindowLeftSide1/roller/0/command"
+    position_topic: "shellies/s7WindowLeftSide1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowLeftSide1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowLeftSide1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+  - platform: mqtt
+    unique_id: "s7WindowRightSide1"
+    name: "Serra 7 - Laterale DX"
+    command_topic: "shellies/s7WindowRightSide1/roller/0/command"
+    position_topic: "shellies/s7WindowRightSide1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowRightSide1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowRightSide1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowFrontSeaSideLx1"
+    name: "Serra 7 - Frontale SX Mare"
+    command_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/command"
+    position_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowFrontSeaSideLx1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowFrontSeaSideRx1"
+    name: "Serra 7 - Frontale DX Mare"
+    command_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/command"
+    position_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowFrontSeaSideRx1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowFrontMountainSideLx1"
+    name: "Serra 7 - Frontale SX Monte"
+    command_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/command"
+    position_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowFrontMountainSideLx1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowFrontMountainSideRx1"
+    name: "Serra 7 - Frontale DX Monte"
+    command_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/command"
+    position_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowFrontMountainSideRx1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowTop1"
+    name: "Serra 7 - Colmo 1"
+    command_topic: "shellies/s7WindowTop1/roller/0/command"
+    position_topic: "shellies/s7WindowTop1/roller/0/pos"
+    set_position_topic: "shellies/s7WindowTop1/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowTop1/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowTop2"
+    name: "Serra 7 - Colmo 2"
+    command_topic: "shellies/s7WindowTop2/roller/0/command"
+    position_topic: "shellies/s7WindowTop2/roller/0/pos"
+    set_position_topic: "shellies/s7WindowTop2/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowTop2/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowTop3"
+    name: "Serra 7 - Colmo 4"
+    command_topic: "shellies/s7WindowTop3/roller/0/command"
+    position_topic: "shellies/s7WindowTop3/roller/0/pos"
+    set_position_topic: "shellies/s7WindowTop3/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowTop3/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "s7WindowTop4"
+    name: "Serra 7 - Colmo 3"
+    command_topic: "shellies/s7WindowTop4/roller/0/command"
+    position_topic: "shellies/s7WindowTop4/roller/0/pos"
+    set_position_topic: "shellies/s7WindowTop4/roller/0/command/pos"
+    availability_topic: "shellies/s7WindowTop4/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
 
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
@@ -47,13 +383,103 @@ group:
   kafka_entity_align:
     name: "Kafka entity group"
     entities:
- 
+  windows_greenhouse1:
+    name: "Serra 7 - Finestre"
+    entities:
+      - 
+  s7WindowTop:
+    name: "Serra 7 - Colmi"
+    entities:
+      - cover.s7WindowTop1
+      - cover.s7WindowTop2
+      - cover.s7WindowTop3
+      - cover.s7WindowTop4
+  s7WindowLow:
+    name: "Serra 7 - Finestre basse"
+    entities:
+      - group.s7WindowMountainSide
+      - group.s7WindowSeaSide
+  s7WindowMountainSide:
+    name: "Serra 7 - Finestre lato montagna"
+    entities: 
+      - cover.s7WindowRightSide1
+      - cover.s7WindowFrontMountainSideLx1
+      - cover.s7WindowFrontMountainSideRx1
+  s7WindowSeaSide:
+    name: "Serra 7 - Finestre lato mare"
+    entities:
+      - cover.s7WindowLeftSide1
+      - cover.s7WindowFrontSeaSideLx1
+      - cover.s7WindowFrontSeaSideRx1
 
 #### include kairos core automations
 automation kairos: !include_dir_merge_list hakairos-configuration/automations/
 
 #### automations
-automation: 
+automation:
+  #Automazioni su temperatura 
+  #TODO: rivedere nomi sensori
+  - alias: Alert temperatura Freddo
+    trigger:
+      - platform: state
+        entity_id: sensor.temperature_status
+        to: cold
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor_value
+          threshold: NOTICE_TEMPERATURA_BASSA_1
+  - alias: Alert temperatura Freddo estremo
+    trigger:
+      - platform: state
+        entity_id: sensor.temperature_status
+        to: extremely_cold
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor_value
+          threshold: ALERT_TEMPERATURA_BASSA_2
+  - alias: Alert temperatura Caldo estremo
+    trigger:
+      - platform: state
+        entity_id: sensor.temperature_status
+        to: extremely_hot
+    condition:
+      - condition: state
+        entity_id: "input_boolean.kafka_integration"
+        state: "on"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor_value
+          threshold: ALERT_TEMPERATURA_ALTA_2 
+  #Automazioni su eventi ambientali
+  - alias: Alert pioggia
+    trigger:
+      - platform: state
+        entity_id: sensor.wRainState
+        to: WE_RAINING
+        for: "00:01:00"
+    action:
+      - event: HA_CLOSE_WINDOWS
+  #Automazioni sulle finestre
+  - alias: Chiudi tutte le finestre
+    trigger:
+      - platform: event
+        event_type: HA_CLOSE_WINDOWS
+    action: #script chiusura finestre
+      - event: HA_EVENT
+        event_data:
+          target: sensor.temperature_sensor_value
+          threshold: ALERT_TEMPERATURA_ALTA_2
 
 
 #### logger configuration
