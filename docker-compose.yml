@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  kairoshub:
+    container_name: kairoshub
+    image: kairoshub:2021.11
+    environment:
+      - TZ=Europe/Rome
+    restart: always
+    depends_on:
+      - mqtt
+  mqtt:
+    container_name: mqtt_local
+    image: eclipse-mosquitto
+    ports:
+      - "1884:1884"
+      - "9001:9001"
+  appdaemon:
+    container_name: appdaemon
+    image: appdaemon:4.1.0
+    entrypoint: ["appdaemon", "-c", "/conf"]
+    ports:
+      - "5050:5050"

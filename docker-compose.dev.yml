@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  kairoshub:
+    container_name: kairoshub
+    volumes:
+      - D:\workspace\projects\python\kairoshub\hassio\configuration.yaml:/config/configuration.yaml
+      - D:\workspace\projects\python\hakairos-configuration:/config/hakairos-configuration
+      - D:\workspace\data\certs\LS_Kafka\certs:/opt/ha-cert
+    environment:
+      - TZ=Europe/Rome
+      - DEBUG=1
+    ports:
+      - "8123:8123"
+    restart: always
+  mqtt:
+    container_name: mqtt
+    volumes:
+      - D:\workspace\data\container\mosquitto\config:/mosquitto/config
+      - D:\workspace\data\container\mosquitto\log:/mosquitto/log
+      - D:\workspace\data\container\mosquitto\data:/mosquitto/data
+  appdaemon:
+    container_name: appdaemon
+    volumes:
+      - D:\workspace\projects\python\hakairos-configuration\appdaemon:/conf
+    environment:
+      - DASH_URL=http://appdaemon:5050
