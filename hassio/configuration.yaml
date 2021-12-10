@@ -1,7 +1,29 @@
 default_config:
 
+panel_custom:
+  - name: windows-strategy-panel
+    # url_path needs to be unique for each panel_custom config
+    url_path: strategia-finestre
+    sidebar_title: Strategia Finestre
+    sidebar_icon: mdi:server
+    module_url:  /local/windows-strategy-panel.js
+    config:
+      # Data you want to make available to panel
+      hello: world
+  - name: example-panel
+    # url_path needs to be unique for each panel_custom config
+    url_path: redirect-server-controls
+    sidebar_title: Example Panel
+    sidebar_icon: mdi:server
+    module_url: /local/example-panel.js
+    config:
+      # Data you want to make available to panel
+      hello: world
+
+  
+        
 #### python scripts extension. Python scripts goes on folder /python_scripts
-python_script:
+#python_script:
 
 recorder:
   purge_keep_days: 21
@@ -19,11 +41,14 @@ ha-custom-events: !include_dir_merge_named hakairos-configuration/hacustomevents
 #### including configuration files
 hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
 
+##### hacs integration
+hacs:
+  token: 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
+  
 #### input text entities
 input_text:
   system_code:
     name: "Identificativo Sistema"
-    initial: "numberToChange"
   system_name: 
     name: "Agricola Futura"
 
@@ -35,20 +60,33 @@ input_number:
     min: 1
     max: 24
     step: 1
+  windows_automation_frequency:
+    name: "Frequenza controllo finestre"
+    min: 5
+    max: 60
+    step: 5
   #######################################
   ############# Serra 7 #################
   #######################################
   s7_open_close_time_window_low:
-    name: "Serra 7 - Tempo apertura / chiusura finestre basse"
+    name: "Tempo apertura / chiusura finestre basse"
     initial: 50
     min: 1
     max: 120
     step: 1
   s7_open_close_time_window_top:
-    name: "Serra 7 - Tempo apertura / chiusura colmi"
+    name: "Tempo apertura / chiusura colmi"
     initial: 105
     min: 1
     max: 120
+    step: 1
+  s7_open_close_step_window_low:
+    min: 1
+    max: 100
+    step: 1
+  s7_open_close_step_window_top:
+    min: 1
+    max: 100
     step: 1
   #######################################
   ############# Serra 8 #################
@@ -65,109 +103,188 @@ input_number:
     min: 1
     max: 120
     step: 1  
-  ######### range temperature ###################
-  s_temperature_day_level1:
-    name: "Soglia temperatura 1 ( t <= Livello 1 )"
+  ######### range temperature serra ###################
+  s7_temperature_period_1:
     min: 0
     max: 50
-    step: 1
-  s_temperature_day_level2:
-    name: "Soglia temperatura 2 ( Livello 1 < t <= Livello 2)"
+    step: 0.5
+  s7_temperature_period_2:
     min: 0
     max: 50
-    step: 1
-  s_temperature_day_level3:
-    name: "Soglia temperatura 3 ( Livello 2 < t <= Livello 3)"
+    step: 0.5
+  s7_temperature_period_3:
     min: 0
     max: 50
-    step: 1
-  s_temperature_day_level4:
-    name: "Soglia temperatura 4 ( Livello 3 < t <= Livello 4)"
+    step: 0.5
+  s7_temperature_period_4:
     min: 0
     max: 50
-    step: 1
-  s_temperature_day_level5:
-    name: "Soglia temperatura 5 ( Livello 4 < t <= Livello 5)"
-    min: 0
-    max: 50
-    step: 1
-  # NON serve, si va per superamento della soglia precedente
-  # sTemperatureDayLevel6: 
-  #   name: "Serra - Livello temperatura 6 ( t >  livello 6)"
-  #   min: 0
-  #   max: 50
-  #   step: 1
-  s_temperature_night_level1:
-    name: "Serra - Livello temperatura notte 1 ( t <=  livello 1)"
-    min: 0
-    max: 50
-    step: 1
-  s_temperature_night_level2:
-    name: "Serra - Livello temperatura notte 6 ( t >=  livello 2)"
-    min: 0
-    max: 50
-    step: 1
-  ######## posizioni finestre x range temperatura #####################  
-  s_window_top_position_temperature_day_level1:
-    name: "Apertura colmo (%) - Soglia 1"
+    step: 0.5
+  ######## posizioni finestre x range temperatura #####################
+  s7_window_top_max_open_period_1:
     min: 0
     max: 100
     step: 1
-  s_window_low_position_temperature_day_level1: 
-    name: "Apertura finestra laterale (%) - Soglia 1"
+  s7_window_low_max_open_period_1:
     min: 0
     max: 100
     step: 1
-  s_window_top_position_temperature_day_level2:
-    name: "Apertura colmo (%) - Soglia 2"
+  s7_window_top_max_open_period_2:
     min: 0
     max: 100
     step: 1
-  s_window_low_position_temperature_day_level2: 
-    name: "Apertura finestra laterale (%) - Soglia 2"
+  s7_window_low_max_open_period_2:
     min: 0
     max: 100
     step: 1
-  s_window_top_position_temperature_day_level3:
-    name: "Apertura colmo (%) - Soglia 3"
+  s7_window_top_max_open_period_3:
     min: 0
     max: 100
     step: 1
-  s_window_low_position_temperature_day_level3: 
-    name: "Apertura finestra laterale (%) - Soglia 3"
+  s7_window_low_max_open_period_3:
+    min: 0
+    max: 100
+    step: 1  
+  s7_window_top_max_open_period_4:
     min: 0
     max: 100
     step: 1
-  s_window_top_position_temperature_day_level4:
-    name: "Apertura colmo (%) - Soglia 4"
+  s7_window_low_max_open_period_4:
     min: 0
     max: 100
     step: 1
-  s_window_low_position_temperature_day_level4: 
-    name: "Apertura finestra laterale (%) - Soglia 4"
+  ######## posizioni finestre x intensità / direzione vento #####################
+  s7_window_top_max_open_period_1_downwind_moderate:
     min: 0
     max: 100
     step: 1
-  s_window_top_position_temperature_day_level5:
-    name: "Apertura colmo (%) - Soglia 5"
+  s7_window_low_max_open_period_1_downwind_moderate:
     min: 0
     max: 100
     step: 1
-  s_window_low_position_temperature_day_level5: 
-    name: "Apertura finestra laterale (%) - Soglia 5"
+  s7_window_top_max_open_period_1_upwind_moderate:
     min: 0
     max: 100
     step: 1
-  s_window_top_position_temperature_day_level6:
-    name: "Apertura colmo (%) - Soglia 6"
+  s7_window_low_max_open_period_1_upwind_moderate:
     min: 0
     max: 100
     step: 1
-  s_window_low_position_temperature_day_level6: 
-    name: "Apertura finestra laterale (%) - Soglia 6"
+  s7_window_top_max_open_period_2_downwind_moderate:
     min: 0
     max: 100
     step: 1
+  s7_window_low_max_open_period_2_downwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_2_upwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_2_upwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_3_downwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_3_downwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_3_upwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_3_upwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_4_downwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_4_downwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_4_upwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_4_upwind_moderate:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_1_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_1_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_1_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_1_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_2_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_2_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_2_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_2_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_3_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_3_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_3_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_3_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_4_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_4_downwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_top_max_open_period_4_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  s7_window_low_max_open_period_4_upwind_strong:
+    min: 0
+    max: 100
+    step: 1
+  ######################################################################
+  #######################################################################
+  ######################################################################
   ######### range umidità ########################
   s_humidity_level1:
     name: "Umidità alta ( 0 < h < vento moderato)"
@@ -189,49 +306,97 @@ input_number:
     name: "Vento intenso (w >= vento intenso )"
     min: 0
     max: 100
-    step: 1
-  ######## posizioni finestre x intensità vento #####################
-  s_window_top_decrease_position_wind_level1:
-    name: "Vento moderato - Chiusura colmo (%)"
+    step: 1 
+  #windows current position
+  s7_window_left_side1_position:
     min: 0
     max: 100
-    step: 1
-  s_window_low_decrease_position_wind_level1: 
-    name: "Vento moderato - Chiusura finestra laterale (%)"
+  s7_window_right_side1_position:
     min: 0
     max: 100
-    step: 1
-  s_window_top_decrease_position_wind_level2:
-    name: "Vento intenso - Chiusura colmo (%)"
+  s7_window_front_sea_side_lx1_position:
     min: 0
     max: 100
-    step: 1
-  s_window_low_decrease_position_wind_level2: 
-    name: "Vento intenso - Chiusura finestra laterale (%)"
+  s7_window_front_sea_side_rx1_position:
     min: 0
     max: 100
-    step: 1
-  ######## posizioni finestre x grado di umidità #####################
-  s_window_top_increase_position_humidity_level1:
-    name: "Apertura colmo (%) - Umidità alta"
+  s7_window_front_mountain_side_lx1_position:
     min: 0
     max: 100
-    step: 1
-  s_window_low_increase_position_humidity_level1:
-    name: "Apertura finestra laterale (%) - Umidità alta"
+  s7_window_front_mountain_side_rx1_position:
     min: 0
     max: 100
-    step: 1
-  s_window_top_increase_position_humidity_level2: 
-    name: "Apertura colmo (%) - Umidità molto alta"
+  s7_window_top2_position:
     min: 0
     max: 100
-    step: 1
-  s_window_low_increase_position_humidity_level2: 
-    name: "Apertura finestra laterale (%) - Umidità molto alta"
+  s7_window_top3_position:
     min: 0
     max: 100
-    step: 1
+  s7_window_top4_position:
+    min: 0
+    max: 100
+  s7_window_top1_position:
+    min: 0
+    max: 100
+  s8_window_front_sea_side1_position:
+    min: 0
+    max: 100
+  s8_window_front_mountain_side1_position:
+    min: 0
+    max: 100
+  s8_window_right_side1_position:
+    min: 0
+    max: 100
+  s8_window_left_side1_position:
+    min: 0
+    max: 100
+  s8_window_top1_position:
+    min: 0
+    max: 100
+  s8_window_top2_position:
+    min: 0
+    max: 100
+
+  
+input_datetime:
+  s7_period_1:
+    name: Periodo 1
+    has_date: false
+    has_time: true
+  s7_period_2:
+    name: Periodo 2
+    has_date: false
+    has_time: true
+  s7_period_3:
+    name: Periodo 3
+    has_date: false
+    has_time: true
+  s7_period_4:
+    name: Periodo 4
+    has_date: false
+    has_time: true
+
+input_select:
+  s7_downwind:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_upwind:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
 
 
 ##### input boolean entities 
@@ -239,6 +404,14 @@ input_boolean:
   kafka_integration:
     name: "Kafka integration"
     initial: true
+  s7_period_1:
+    name: "Periodo 1"
+  s7_period_2:
+    name: "Periodo 2"
+  s7_period_3:
+    name: "Periodo 3"
+  s7_period_4:
+    name: "Periodo 4"
   s7_window_top_automation:
     name: "Automazioni colmi Serra 7"
   s7_window_low_automation:
@@ -250,69 +423,43 @@ input_boolean:
 
 sensor:
   #######################################
+  ######### Weather Station #############
+  #######################################
+  - name: ws_temperature
+    platform: mqtt
+    state_topic: ws/temperature
+    device_class: temperature
+    unit_of_measurement: "°c"
+  - name: ws_humidity
+    platform: mqtt
+    state_topic: ws/humidity
+    unit_of_measurement: "%"
+  - name: ws_battery
+    platform: mqtt
+    unique_id: ws_battery
+    state_topic: ws/battery
+    device_class: battery
+  - name: ws_uv_sensor
+    platform: mqtt
+    state_topic: ws/uv
+  - name: ws_wind_direction_sensor
+    platform: mqtt
+    state_topic: ws/wind/direction
+  - name: ws_wind_speed_sensor
+    platform: mqtt
+    state_topic: ws/wind/speed
+  - name: ws_wind_gust_sensor #folata
+    platform: mqtt
+    state_topic: ws/wind/gust 
+  - name: ws_rain_sensor
+    platform: mqtt
+    state_topic: ws/rain
+  - name: ws_solar_radiation_sensor
+    platform: mqtt
+    state_topic: ws/solar-radiation
+  #######################################
   ############# Serra 7 #################
   #######################################
-  # finestre
-  - platform: mqtt #s7_window_left_side1
-    name: "Serra 7 - Laterale SX"
-    unique_id: s7_window_left_side1
-    state_topic: "shellies/s7WindowLeftSide1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7WindowRightSide1
-    name: "Serra 7 - Laterale DX"
-    unique_id: s7_window_right_side1
-    state_topic: "shellies/s7WindowRightSide1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_front_sea_side_lx1
-    name: "Serra 7 - Frontale SX Mare"
-    unique_id: s7_window_front_sea_side_lx1
-    state_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_front_sea_side_rx1
-    name: "Serra 7 - Frontale DX Mare"
-    unique_id: s7_window_front_sea_side_rx1
-    state_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_front_mountain_side_lx1
-    name: "Serra 7 - Frontale SX Monte"
-    unique_id: s7_window_front_mountain_side_lx1
-    state_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_front_mountain_side_rx1
-    name: "Serra 7 - Frontale DX Monte"
-    unique_id: s7_window_front_mountain_side_rx1
-    state_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_top1
-    name: "Serra 7 - Colmo 1"
-    unique_id: s7_window_top1
-    state_topic: "shellies/s7WindowTop1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_top2
-    name: "Serra 7 - Colmo 2"
-    unique_id: s7_window_top2
-    state_topic: "shellies/s7WindowTop2/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_top3
-    name: "Serra 7 - Colmo 4" #3 e 4 sono invertiti
-    unique_id: s7_window_top3
-    state_topic: "shellies/s7WindowTop3/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt #s7_window_top4
-    name: "Serra 7 - Colmo 3" #3 e 4 sono invertiti
-    unique_id: s7_window_top4
-    state_topic: "shellies/s7WindowTop4/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
   # temperatura / umidità
   - platform: mqtt #s7_humidity_sensor 
     name: s7_humidity_sensor #TODO: DA rivedere nomi
@@ -320,7 +467,7 @@ sensor:
     device_class: humidity
   - platform: mqtt #s7_temperature_sensor
     name: s7_temperature_sensor #TODO: DA rivedere nomi
-    state_topic: "shellies/YYYYYYY/ext_temperature/0"
+    state_topic: "shellies/s7Sensor2/ext_temperature/0"
     device_class: temperature
   - platform: mqtt #s7Soilmoisture_sensor
     name: s7Soilmoisture_sensor #TODO: DA rivedere nomi
@@ -330,42 +477,6 @@ sensor:
   ############# Serra 8 #################
   #######################################
   #TODO: DA RIVEDERE MOTORI e NOMI
-  - platform: mqtt
-    name: "Serra 8 - Laterale SX"
-    unique_id: s8WindowLeftSide1
-    state_topic: "shellies/s7WindowLeftSide1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt
-    name: "Serra 8 - Laterale DX"
-    unique_id: s8WindowRightSide1
-    state_topic: "shellies/s7WindowRightSide1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt
-    name: "Serra 8 - Frontale SX Mare"
-    unique_id: s8WindowFrontSeaSideLx1
-    state_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt
-    name: "Serra 8 - Frontale SX Monte"
-    unique_id: s8WindowFrontMountainSideLx1
-    state_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt
-    name: "Serra 8 - Colmo 1"
-    unique_id: s8WindowTop1
-    state_topic: "shellies/s7WindowTop1/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
-  - platform: mqtt
-    name: "Serra 8 - Colmo 2"
-    unique_id: s8WindowTop2
-    state_topic: "shellies/s7WindowTop2/roller/0/pos"
-    unit_of_measurement: "%"
-    icon: mdi:percent
   # temperatura / umidità
   - platform: mqtt #TODO: DA rivedere nomi
     name: "s8_humidity_sensor"
@@ -385,54 +496,205 @@ sensor:
       #######################################
       ############# Serra 7 #################
       #######################################
+      s7_window_left_side1:
+          friendly_name: "Laterale SX "
+          unique_id: s7_window_left_side1
+          value_template: "{{ states('input_number.s7_window_left_side1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowLeftSide1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_left_side1_position
+            orientation: "Est"
+            window_type: "window_low"
+      s7_window_right_side1:
+          friendly_name: "Laterale DX"
+          unique_id: s7_window_right_side1
+          value_template: "{{ states('input_number.s7_window_right_side1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowRightSide1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_right_side1_position
+            orientation: "Ovest"
+            window_type: "window_low"
+      s7_window_front_sea_side_lx1:
+          friendly_name: "Frontale SX Mare"
+          unique_id: s7_window_front_sea_side_lx1
+          value_template: "{{ states('input_number.s7_window_front_sea_side_lx1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_front_sea_side_lx1_position
+            orientation: "Sud" #piu probabilmente Sud Est
+            window_type: "window_low"
+      s7_window_front_sea_side_rx1:
+          friendly_name: "Frontale DX Mare"
+          unique_id: s7_window_front_sea_side_rx1
+          value_template: "{{ states('input_number.s7_window_front_sea_side_rx1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_front_sea_side_rx1_position
+            orientation: "Sud" #piu probabilmente Sud Ovest
+            window_type: "window_low"
+      s7_window_front_mountain_side_lx1:
+          friendly_name: "Frontale SX Monte"
+          unique_id: s7_window_front_mountain_side_lx1
+          value_template: "{{ states('input_number.s7_window_front_mountain_side_lx1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_front_mountain_side_lx1_position
+            orientation: "Nord" #piu probabilmente Nord Est
+            window_type: "window_low"
+      s7_window_front_mountain_side_rx1:
+          friendly_name: "Frontale DX Monte"
+          unique_id: s7_window_front_mountain_side_rx1
+          value_template: "{{ states('input_number.s7_window_front_mountain_side_rx1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_front_mountain_side_rx1_position
+            orientation: "Nord Ovest" #piu probabilmente Nord Ovest
+            window_type: "window_low"
+      s7_window_top1:
+          friendly_name: "Colmo 1"
+          unique_id: s7_window_top1
+          value_template: "{{ states('input_number.s7_window_top1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowTop1/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_top1_position
+            orientation: "Nord" 
+            window_type: "window_top"
+      s7_window_top2:
+          friendly_name: "Colmo 2"
+          unique_id: s7_window_top2
+          value_template: "{{ states('input_number.s7_window_top2_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowTop2/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_top2_position
+            orientation: "Nord" 
+            window_type: "window_top"
+      s7_window_top3:
+          friendly_name: "Colmo 4"
+          unique_id: s7_window_top3
+          value_template: "{{ states('input_number.s7_window_top3_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowTop3/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_top3_position
+            orientation: "Nord" 
+            window_type: "window_top"
+      s7_window_top4:
+          friendly_name: "Colmo 3"
+          unique_id: s7_window_top4
+          value_template: "{{ states('input_number.s7_window_top4_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s7WindowTop4/roller/0/command"
+            entityStateToUpdate: input_number.s7_window_top4_position
+            orientation: "Nord"
+            window_type: "window_top"
       s7_temperature: #sensori per media di altri sensori
-        friendly_name: "Temperatura"
-        value_template: "{{ states('sensor.s7_temperature_sensor')|int }}" #TODO: rivedere nome
+        friendly_name: "Temperatura Serra 7"
+        value_template: "{{ states('sensor.s7_temperature_sensor')|int }}"
         unit_of_measurement: "°c"
       s7_humidity: #sensori per media di altri sensori
-        friendly_name: "Umidità"
-        value_template: "{{ states('sensor.s7_humidity_sensor')|int }}" #TODO: rivedere nome
+        friendly_name: "Umidità Serra 7"
+        value_template: "{{ states('sensor.s7_humidity_sensor')|int }}" 
         unit_of_measurement: "%"
-      s7_temperature_state: #TODO: rivedere nome e classificazione
-        value_template: >
-          {% if states('sensor.s7_temperature')|int <= states('input_number.s_temperature_day_level1')|int %}
-            TEMP_EXTREMELY_LOW
-          {% elif states('sensor.s7_temperature')|int > states('input_number.s_temperature_day_level1')|int and states('sensor.s7_temperature')|int <= states('input_number.s_temperature_day_level2')|int %}
-            TEMP_LOW
-          {% elif states('sensor.s7_temperature')|int > states('input_number.s_temperature_day_level2')|int and states('sensor.s7_temperature')|int <= states('input_number.s_temperature_day_level3')|int %}
-            TEMP_NORMAL
-          {% elif states('sensor.s7_temperature')|int > states('input_number.s_temperature_day_level3')|int and states('sensor.s7_temperature')|int <= states('input_number.s_temperature_day_level4')|int %}
-            TEMP_MODERATE
-          {% elif states('sensor.s7_temperature')|int > states('input_number.s_temperature_day_level4')|int and states('sensor.s7_temperature')|int <= states('input_number.s_temperature_day_level5')|int %}
-            TEMP_HIGH
-          {% elif states('sensor.s7_temperature')|int > states('input_number.s_temperature_day_level5')|int %}
-            TEMP_EXTREMELY_HIGH
-          {% endif %}
-      s7_humidity_state: #TODO: rivedere nome e classificazione
-        value_template: >
-          {% if states('sensor.s7_humidity')|int <= states('input_number.s_humidity_level1')|int %}
-            HUM_NORMAL
-          {% elif states('sensor.s7_humidity')|int > states('input_number.s_humidity_level1')|int and states('sensor.s7_humidity')|int <= states('input_number.s_humidity_level2')|int %}
-            HUM_HIGH
-          {% elif states('sensor.s7_humidity')|int > states('input_number.s_humidity_level2')|int %}
-            HUM_EXTREMELY_HIGH
-          {% endif %}     
+          
       s7_soilmoisture_sensor: #sensori per media di altri sensori
         friendly_name: "Umidità del terreno"
         value_template: "{{ states('sensor.s7Soilmoisture_sensor')|int }}" #TODO: rivedere nome
         unit_of_measurement: "°c"
+      s7_temperature_trend:
+        friendly_name: "Trend temperatura (30 min)"
+        value_template: >-
+          {% if is_state('binary_sensor.s7_temp_falling', 'off') and  is_state('binary_sensor.s7_temp_rising', 'off') %}
+            BALANCED
+          {% elif is_state('binary_sensor.s7_temp_falling', 'on') and  is_state('binary_sensor.s7_temp_rising', 'off') %}
+            FALLING
+          {% elif is_state('binary_sensor.s7_temp_falling', 'off') and is_state('binary_sensor.s7_temp_rising', 'on') %}
+            RISING
+          {% endif %}
       #######################################
       ############# Serra 8 #################
       #######################################
+      s8_window_front_sea_side1:
+          friendly_name: "Frontale lato Mare"
+          unique_id: s8_window_front_sea_side1
+          value_template: "{{ states('input_number.s8_window_front_sea_side1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s8WindowFrontSeaSide1/roller/0/command"
+            entityStateToUpdate: input_number.s8_window_front_sea_side1_position
+      s8_window_front_mountain_side1:
+          friendly_name: "Frontale lato Monte"
+          unique_id: s8_window_front_mountain_side1
+          value_template: "{{ states('input_number.s8_window_front_mountain_side1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s8WindowFrontMountainSide1/roller/0/command"
+            entityStateToUpdate: input_number.s8_window_front_mountain_side1_position
+      s8_window_right_side1:
+          friendly_name: "Laterale DX"
+          unique_id: s8_window_right_side1
+          value_template: "{{ states('input_number.s8_window_right_side1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s8WindowRightSide1/roller/0/command"
+            entityStateToUpdate: input_number.s8_window_right_side1_position
+      s8_window_left_side1:
+          friendly_name: "Laterale SX"
+          unique_id: s8_window_left_side1
+          value_template: "{{ states('input_number.s8_window_left_side1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s8WindowLeftSide1/roller/0/command"
+            entityStateToUpdate: input_number.s8_window_left_side1_position
+      s8_window_top1:
+          friendly_name: "Colmo 1"
+          unique_id: s8_window_top1
+          value_template: "{{ states('input_number.s8_window_top1_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s8WindowTop1/roller/0/command"
+            entityStateToUpdate: input_number.s8_window_top1_position
+      s8_window_top2:
+          friendly_name: "Colmo 2"
+          unique_id: s8_window_top2
+          value_template: "{{ states('input_number.s8_window_top2_position')|int }}"
+          unit_of_measurement: "%"
+          icon_template: mdi:percent
+          attribute_templates:
+            command_topic: "shellies/s8WindowTop2/roller/0/command"
+            entityStateToUpdate: input_number.s8_window_top2_position
       s8_temperature: #sensori per media di altri sensori
-        friendly_name: "Temperatura"
+        friendly_name: "Temperatura Serra 8"
         value_template: "{{ states('sensor.s8_temperature_sensor')|int }}" #TODO: rivedere nome
         unit_of_measurement: "°c"
       s8_humidity: #sensori per media di altri sensori
-        friendly_name: "Umidità"
+        friendly_name: "Umidità Serra 8"
         value_template: "{{ states('sensor.s8_humidity_sensor')|int }}" #TODO: rivedere nome
         unit_of_measurement: "%"
-      s8_temperature_state: #TODO: rivedere nome e classificazione
+      s8_temperature_state: 
         value_template: >
           {% if states('sensor.s8_temperature')|int <= states('input_number.s_temperature_day_level1')|int %}
             TEMP_EXTREMELY_LOW
@@ -447,11 +709,11 @@ sensor:
           {% elif states('sensor.s8_temperature')|int > states('input_number.s_temperature_day_level5')|int %}
             TEMP_EXTREMELY_HIGH
           {% endif %}
-      s8_humidity_state: #TODO: rivedere nome e classificazione
+      s8_humidity_state: 
         value_template: >
           {% if states('sensor.s8_humidity')|int <= states('input_number.s_humidity_level1')|int %}
             HUM_NORMAL
-          {% elif states('sensor.s8_humidity')|int > states('input_number.s_humidity_level1') and states('sensor.s8_humidity')|int <= states('input_number.s_humidity_level2')|int %}
+          {% elif states('sensor.s8_humidity')|int > states('input_number.s_humidity_level1')|int and states('sensor.s8_humidity')|int <= states('input_number.s_humidity_level2')|int %}
             HUM_HIGH
           {% elif states('sensor.s8_humidity')|int > states('input_number.s_humidity_level2')|int %}
             HUM_EXTREMELY_HIGH
@@ -460,51 +722,107 @@ sensor:
         friendly_name: "Umidità del terreno"
         value_template: "{{ states('sensor.s8Soilmoisture_sensor')|int }}" #TODO: rivedere nome
         unit_of_measurement: "°c"
-      #TODO: da vedere integrazione con stazione meteo
+      w_wind_intensity_frontend:
+        value_template: >
+          {% if states('sensor.ws_wind_speed_sensor')|int > 0 %}
+            {{ states('sensor.ws_wind_speed_sensor')|int }}
+          {% else %}
+            ASSENTE
+          {% endif %}
+      w_wind_direction_frontend:
+        value_template: >
+          {% if states('sensor.w_wind_intensity_frontend') == 'ASSENTE' %}
+            ASSENTE
+          {% else %}
+            {% set winbearing = (states('sensor.ws_wind_direction_sensor')|float/45)|int|round +1 %}
+            {% set winddir = ['Nord', 'Nord Est','Est','Sud Est','Sud','Sud Ovest','Ovest','Nord Ovest'] %}
+            {{ winddir[winbearing] }}
+          {% endif %}
+      w_wind_gust_frontend:
+        value_template: >
+          {% if states('sensor.w_wind_intensity_frontend') == 'ASSENTE' %}
+            ASSENTE
+          {% else %}
+            {{ states('sensor.ws_wind_gust_sensor')|int }}
+          {% endif %}
+      w_rain_intensity_frontend:
+        value_template: >
+          {% if states('sensor.ws_rain_sensor')|int == 0 %}
+            ASSENTE
+          {% elif states('sensor.ws_rain_sensor')|int <= 10 %}
+            PIOGGIA DEBOLE
+          {% else %}
+            TEMPORALE
+          {% endif %}
+          
+      weather_index:
+        value_template: >
+          {% if states('sensor.ws_rain_sensor')|int > 0 and states('sensor.ws_rain_sensor')|int <= 10 %}
+            PIOGGIA DEBOLE
+          {% elif states('sensor.ws_rain_sensor')|int > 10 %}
+            TEMPORALE
+          {% elif states('sensor.ws_solar_radiation_sensor')|int == 0 %}
+            NOTTE
+          {% elif states('sensor.ws_solar_radiation_sensor')|int > 0 and states('sensor.ws_solar_radiation_sensor')|int < 150 %}
+            NUVOLOSO
+          {% elif states('sensor.ws_solar_radiation_sensor')|int > 0 and states('sensor.ws_solar_radiation_sensor')|int > 150 %}
+            SOLEGGIATO
+          {% endif %}
       w_rain_state:
         value_template: >
-          {% if states('sensor.XXXX') == TODO %}
+          {% if states('sensor.weather_index') == 'PIOGGIA DEBOLE' or states('sensor.weather_index') == 'TEMPORALE'  %}
             WE_RAINING
           {% else %}
             WE_NOT_RAINING
           {% endif %}
       w_wind_from_state: 
         value_template: >
-          {% if states('sensor.YYYY') == TODO %}
+          {% if states('sensor.w_wind_direction_frontend') == ASSENTE %}
             WE_WIND_NONE
-          {% elif states('sensor.WWWWWW') == TODO %}
-            WE_WIND_SEA
           {% else %}
-            WE_WIND_HILL
+            {{ states('sensor.w_wind_direction_frontend') }}
           {% endif %}
       w_wind_intensity_state:
         value_template: >
-          {% if states('sensor.YYYY')|int == 0 %}
+          {% if states('sensor.ws_wind_speed_sensor')|int >= 0 and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level1')|int %}
             WE_WIND_INTENSITY_NONE
-          {% elif states('sensor.WWWWWW')|int > 0 and states('sensor.WWWWWW')|int <= states('input_number.w_wind_level1') %}
+          {% elif states('sensor.ws_wind_speed_sensor')|int > states('input_number.w_wind_level1')|int and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level2')|int %}
             WE_WIND_INTENSITY_MODERATE
-          {% elif states('sensor.WWWWWW')|int > states('input_number.w_wind_level1') %}
+          {% elif states('sensor.ws_wind_speed_sensor')|int >= states('input_number.w_wind_level2')|int %}
             WE_WIND_INTENSITY_HIGH
           {% endif %}
-
+      w_temperature_state:
+        value_template: >-
+          {% if states('sensor.temperature_sensor')|int < 5 %}
+            extremely_cold
+          {% elif states('sensor.temperature_sensor')|int > 5 and states('sensor.temperature_sensor')|int <= 10 %}
+            cold
+          {% elif states('sensor.temperature_sensor')|int > 11 and states('sensor.temperature_sensor')|int <= 20 %}
+            normal
+          {% elif states('sensor.temperature_sensor')|int > 20 and states('sensor.temperature_sensor')|int <= 30 %}
+            hot
+          {% else %}
+            extremely_hot
+          {% endif %}
 
 binary_sensor:
   #S7
   - platform: mqtt #s7_blackout
-    name: s7_blackout  #TODO: Da rivedere nomi e topic
-    state_topic: "shellies/kairos_anomalia/input/1"
+    name: s7_blackout  
+    unique_id: s7_blackout
+    state_topic: "shellies/s7Sensor1/input/0"
     qos: 0
     payload_on: "1"
     payload_off: "0"
   - platform: mqtt #s7_window_side_anomaly
-    name: s7_window_side_anomaly  #TODO: Da rivedere nomi e topic
-    state_topic: "shellies/kairos_anomalia/input/1"
+    name: s7_window_side_anomaly  
+    state_topic: "shellies/s7Sensor1/input/2"
     qos: 0
     payload_on: "1"
     payload_off: "0"
   - platform: mqtt #s7_window_top_anomaly
-    name: s7_window_top_anomaly  #TODO: Da rivedere nomi e topic
-    state_topic: "shellies/kairos_anomalia/input/1"
+    name: s7_window_top_anomaly  
+    state_topic: "shellies/s7Sensor1/input/1"
     qos: 0
     payload_on: "1"
     payload_off: "0"
@@ -527,13 +845,47 @@ binary_sensor:
     qos: 0
     payload_on: "1"
     payload_off: "0"
+  - platform: template
+    sensors:
+      s7_state:
+        friendly_name: Serra 7
+        device_class: problem
+        value_template: >
+          {% if states('binary_sensor.s7_blackout') == on or states('binary_sensor.s7_window_side_anomaly') == on or states('binary_sensor.s7_window_top_anomaly') == on %}
+            on
+          {% else %}
+            off
+          {% endif %}
+      s8_state:
+        friendly_name: Serra 8
+        device_class: problem
+        value_template: >
+          {% if states('binary_sensor.s8_blackout') == on or states('binary_sensor.s8_window_side_anomaly') == on or states('binary_sensor.s8_window_top_anomaly') == on %}
+            on
+          {% else %}
+            off
+          {% endif %}
+  - platform: trend
+    sensors:
+      s7_temp_falling:
+        entity_id: sensor.s7_temperature_sensor
+        sample_duration: 1800
+        max_samples: 60
+        min_gradient: -0.0002
+        device_class: cold
 
+      s7_temp_rising:
+        entity_id: sensor.s7_temperature_sensor
+        sample_duration: 1800
+        max_samples: 60
+        min_gradient: 0.0002
+        device_class: heat
 cover:
   - platform: mqtt #s7WindowLeftSide1
     unique_id: s7_window_left_side1
-    name: "Serra 7 - Laterale SX"
+    name: "Laterale SX"
     command_topic: "shellies/s7WindowLeftSide1/roller/0/command"
-    # position_topic: "shellies/s7WindowLeftSide1/roller/0/pos"
+    position_topic: "shellies/s7WindowLeftSide1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowLeftSide1/roller/0/command/pos"
     availability_topic: "shellies/s7WindowLeftSide1/online"
     payload_available: "true"
@@ -547,7 +899,7 @@ cover:
     optimistic: false
   - platform: mqtt #s7_window_right_side1
     unique_id: s7_window_right_side1
-    name: "Serra 7 - Laterale DX"
+    name: "Laterale DX"
     command_topic: "shellies/s7WindowRightSide1/roller/0/command"
     # position_topic: "shellies/s7WindowRightSide1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowRightSide1/roller/0/command/pos"
@@ -564,7 +916,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_front_sea_side_lx1
     unique_id: s7_window_front_sea_side_lx1
-    name: "Serra 7 - Frontale SX Mare"
+    name: "Frontale SX Mare"
     command_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/command"
     # position_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/command/pos"
@@ -581,7 +933,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_front_sea_side_rx1
     unique_id: s7_window_front_sea_side_rx1
-    name: "Serra 7 - Frontale DX Mare"
+    name: "Frontale DX Mare"
     command_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/command"
     # position_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/command/pos"
@@ -598,7 +950,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_front_mountain_side_lx1
     unique_id: s7_window_front_mountain_side_lx1
-    name: "Serra 7 - Frontale SX Monte"
+    name: "Frontale SX Monte"
     command_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/command"
     # position_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/command/pos"
@@ -615,7 +967,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_front_mountain_side_rx1
     unique_id: s7_window_front_mountain_side_rx1
-    name: "Serra 7 - Frontale DX Monte"
+    name: "Frontale DX Monte"
     command_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/command"
     # position_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/command/pos"
@@ -632,7 +984,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_top1
     unique_id: s7_window_top1
-    name: "Serra 7 - Colmo 1"
+    name: "Colmo 1"
     command_topic: "shellies/s7WindowTop1/roller/0/command"
     # position_topic: "shellies/s7WindowTop1/roller/0/pos"
     #set_position_topic: "shellies/s7WindowTop1/roller/0/command/pos"
@@ -649,7 +1001,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_top2
     unique_id: s7_window_top2
-    name: "Serra 7 - Colmo 2"
+    name: "Colmo 2"
     command_topic: "shellies/s7WindowTop2/roller/0/command"
     #position_topic: "shellies/s7WindowTop2/roller/0/pos"
     #set_position_topic: "shellies/s7WindowTop2/roller/0/command/pos"
@@ -666,7 +1018,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_top3
     unique_id: s7_window_top3
-    name: "Serra 7 - Colmo 4"
+    name: "Colmo 4"
     command_topic: "shellies/s7WindowTop3/roller/0/command"
     #position_topic: "shellies/s7WindowTop3/roller/0/pos"
     #set_position_topic: "shellies/s7WindowTop3/roller/0/command/pos"
@@ -683,7 +1035,7 @@ cover:
     qos: 1
   - platform: mqtt #s7_window_top4
     unique_id: s7_window_top4
-    name: "Serra 7 - Colmo 3"
+    name: "Colmo 3"
     command_topic: "shellies/s7WindowTop4/roller/0/command"
     #position_topic: "shellies/s7WindowTop4/roller/0/pos"
     #set_position_topic: "shellies/s7WindowTop4/roller/0/command/pos"
@@ -702,11 +1054,46 @@ cover:
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
 group:
-  kafka_entity_align:
-    name: "Kafka entity group"
+  # kafka_entity_align:
+  #   name: "Kafka entity group"
+  #   entities:
+  # 
+  s7_periods_active:
+    name: "Periodi Attivi serra 7"
     entities:
-      -
-  windows_greenhouse1:
+      - input_boolean.s7_period_1
+      - input_boolean.s7_period_2
+      - input_boolean.s7_period_3
+      - input_boolean.s7_period_4
+  s7_periods:
+    name: "Periodi Serra 7"
+    entities:
+      - input_datetime.s7_period_1
+      - input_datetime.s7_period_2
+      - input_datetime.s7_period_3
+      - input_datetime.s7_period_4
+  s7_period_temperature:
+    name: "Temperature periodi Serra 7"
+    entities:
+      - input_number.s7_temperature_period_1
+      - input_number.s7_temperature_period_2
+      - input_number.s7_temperature_period_3
+      - input_number.s7_temperature_period_4
+  s7_period_window_top_max_open:
+    name: "Massima apertura colmi Serra 7"
+    entities:
+      - input_number.s7_window_top_max_open_period_1
+      - input_number.s7_window_top_max_open_period_2
+      - input_number.s7_window_top_max_open_period_3
+      - input_number.s7_window_top_max_open_period_4
+  s7_period_window_low_max_open:
+    name: "Massima apertura finestre laterali Serra 7"
+    entities:
+      - input_number.s7_window_low_max_open_period_1
+      - input_number.s7_window_low_max_open_period_2
+      - input_number.s7_window_low_max_open_period_3
+      - input_number.s7_window_low_max_open_period_4
+  windows_greenhouse7:
     name: "Serra 7 - Finestre"
     entities:
       - group.s7_window_top
@@ -714,77 +1101,201 @@ group:
   s7_window_top:
     name: "Serra 7 - Colmi"
     entities:
-      - cover.s7_window_top1
-      - cover.s7_window_top2
-      - cover.s7_window_top3
-      - cover.s7_window_top4
+      - sensor.s7_window_top1
+      - sensor.s7_window_top2
+      - sensor.s7_window_top3
+      - sensor.s7_window_top4
   s7_window_low:
     name: "Serra 7 - Finestre basse"
     entities:
-      - group.s7_window_mountain_side
-      - group.s7_window_sea_side
-  s7_window_mountain_side:
-    name: "Serra 7 - Finestre lato montagna"
-    entities: 
-      - cover.s7_window_right_side1
-      - cover.s7_window_front_mountain_side_lx1
-      - cover.s7_window_front_mountain_side_rx1
-  s7_window_sea_side:
+      - sensor.s7_window_right_side1
+      - sensor.s7_window_front_mountain_side_lx1
+      - sensor.s7_window_front_mountain_side_rx1
+      - sensor.s7_window_left_side1
+      - sensor.s7_window_front_sea_side_lx1
+      - sensor.s7_window_front_sea_side_rx1
+  # wind upwind / downwind groups
+  s7_period_wind_downwind_moderate_window_top_max_open:
+    name: "Massima apertura a sottovento moderato colmi Serra 7"
+    entities:
+      - input_number.s7_window_top_max_open_period_1_downwind_moderate
+      - input_number.s7_window_top_max_open_period_2_downwind_moderate
+      - input_number.s7_window_top_max_open_period_3_downwind_moderate
+      - input_number.s7_window_top_max_open_period_4_downwind_moderate
+  s7_period_wind_downwind_moderate_window_low_max_open:
+    name: "Massima apertura a sottovento moderato finestre laterali Serra 7"
+    entities:
+      - input_number.s7_window_low_max_open_period_1_downwind_moderate
+      - input_number.s7_window_low_max_open_period_2_downwind_moderate
+      - input_number.s7_window_low_max_open_period_3_downwind_moderate
+      - input_number.s7_window_low_max_open_period_4_downwind_moderate
+  s7_period_wind_downwind_strong_window_top_max_open:
+    name: "Massima apertura a sottovento intenso colmi Serra 7"
+    entities:
+      - input_number.s7_window_top_max_open_period_1_downwind_strong
+      - input_number.s7_window_top_max_open_period_2_downwind_strong
+      - input_number.s7_window_top_max_open_period_3_downwind_strong
+      - input_number.s7_window_top_max_open_period_4_downwind_strong
+  s7_period_wind_downwind_strong_window_low_max_open:
+    name: "Massima apertura a sottovento intenso finestre laterali Serra 7"
+    entities:
+      - input_number.s7_window_low_max_open_period_1_downwind_strong
+      - input_number.s7_window_low_max_open_period_2_downwind_strong
+      - input_number.s7_window_low_max_open_period_3_downwind_strong
+      - input_number.s7_window_low_max_open_period_4_downwind_strong  
+  s7_period_wind_upwind_moderate_window_top_max_open:
+    name: "Massima apertura a controvento moderato colmi Serra 7"
+    entities:
+      - input_number.s7_window_top_max_open_period_1_upwind_moderate
+      - input_number.s7_window_top_max_open_period_2_upwind_moderate
+      - input_number.s7_window_top_max_open_period_3_upwind_moderate
+      - input_number.s7_window_top_max_open_period_4_upwind_moderate
+  s7_period_wind_upwind_moderate_window_low_max_open:
+    name: "Massima apertura a controvento moderato finestre laterali Serra 7"
+    entities:
+      - input_number.s7_window_low_max_open_period_1_upwind_moderate
+      - input_number.s7_window_low_max_open_period_2_upwind_moderate
+      - input_number.s7_window_low_max_open_period_3_upwind_moderate
+      - input_number.s7_window_low_max_open_period_4_upwind_moderate
+  s7_period_wind_upwind_strong_window_top_max_open:
+    name: "Massima apertura a controvento intenso colmi Serra 7"
+    entities:
+      - input_number.s7_window_top_max_open_period_1_upwind_strong
+      - input_number.s7_window_top_max_open_period_2_upwind_strong
+      - input_number.s7_window_top_max_open_period_3_upwind_strong
+      - input_number.s7_window_top_max_open_period_4_upwind_strong
+  s7_period_wind_upwind_strong_window_low_max_open:
+    name: "Massima apertura a controvento intenso finestre laterali Serra 7"
+    entities:
+      - input_number.s7_window_low_max_open_period_1_upwind_strong
+      - input_number.s7_window_low_max_open_period_2_upwind_strong
+      - input_number.s7_window_low_max_open_period_3_upwind_strong
+      - input_number.s7_window_low_max_open_period_4_upwind_strong
+  windows_greenhouse8:
+    name: "Serra 8 - Finestre"
+    entities:
+      - group.s8_window_top
+      - group.s8_window_low
+  s8_window_top:
+    name: "Serra 8 - Colmi"
+    entities:
+      - sensor.s8_window_top1
+      - sensor.s8_window_top2
+  s8_window_low:
+    name: "Serra 8 - Finestre basse"
+    entities:
+      - group.s8_window_mountain_side
+      - group.s8_window_sea_side
+  s8_window_mountain_side:
+    name: "Serra 8 - Finestre lato montagna"
+    entities: #TODO da verificare la disposizione delle finestre
+      - sensor.s8_window_right_side1
+      - sensor.s8_window_front_mountain_side1
+  s8_window_sea_side:
     name: "Serra 7 - Finestre lato mare"
     entities:
-      - cover.s7_window_left_side1
-      - cover.s7_window_front_sea_side_lx1
-      - cover.s7_window_front_sea_side_rx1
-  
+      - sensor.s8_window_left_side1
+      - sensor.s8_window_front_sea_side1
+
 #### include kairos core automations
 automation kairos: !include_dir_merge_list hakairos-configuration/automations/
 
 #### automations
 automation:
   #Automazioni su temperatura 
-  #TODO: rivedere nomi sensori
-  - alias: Alert temperatura Freddo
+  - alias: Alert temperatura ambiente
     trigger:
       - platform: state
-        entity_id: sensor.temperature_status
+        entity_id: sensor.w_temperature_state
         to: cold
-    condition:
-      - condition: state
-        entity_id: "input_boolean.kafka_integration"
-        state: "on"
-    action:
-      - event: HA_EVENT
-        event_data:
-          target: sensor.temperature_sensor_value
-          threshold: NOTICE_TEMPERATURA_BASSA_1
-  - alias: Alert temperatura Freddo estremo
-    trigger:
+        for: "00:01:00"
       - platform: state
-        entity_id: sensor.temperature_status
+        entity_id: sensor.w_temperature_state
         to: extremely_cold
-    condition:
-      - condition: state
-        entity_id: "input_boolean.kafka_integration"
-        state: "on"
+        for: "00:01:00"
+      - platform: state
+        entity_id: sensor.w_temperature_state
+        to: extremely_hot
+        for: "00:01:00"
     action:
       - event: HA_EVENT
         event_data:
-          target: sensor.temperature_sensor_value
-          threshold: ALERT_TEMPERATURA_BASSA_2
-  - alias: Alert temperatura Caldo estremo
+          target: sensor.w_temperature_state
+          threshold: "{{ trigger.to_state.state }}"
+  - alias: Alert anomalia serra 7 ON
     trigger:
       - platform: state
-        entity_id: sensor.temperature_status
-        to: extremely_hot
-    condition:
-      - condition: state
-        entity_id: "input_boolean.kafka_integration"
-        state: "on"
+        entity_id: binary_sensor.s7_state
+        to: on
+        for: "00:01:00"
     action:
       - event: HA_EVENT
         event_data:
-          target: sensor.temperature_sensor_value
-          threshold: ALERT_TEMPERATURA_ALTA_2 
+          target: binary_sensor.s7_state
+          threshold: > 
+            {% if states('binary_sensor.s7_blackout')%}
+              blackout
+            {% elif states('binary_sensor.s7_window_side_anomaly') %}
+              windows_side_anomaly
+            {% elif states('binary_sensor.s7_window_top_anomaly') %}
+              windows_top_anomaly
+            {% endif %}
+      - service: service.turn_off
+        entity_id: input_boolean.s7_window_low_automation
+      - service: service.turn_off
+        entity_id: input_boolean.s7_window_top_automation
+  - alias: Alert anomalia serra 8 ON
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.s8_state
+        to: on
+        for: "00:01:00"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.s8_state
+          threshold: > 
+            {% if states('binary_sensor.s8_blackout')%}
+              blackout
+            {% elif states('binary_sensor.s8_window_side_anomaly') %}
+              windows_side_anomaly
+            {% elif states('binary_sensor.s8_window_top_anomaly') %}
+              windows_top_anomaly
+            {% endif %}
+      - service: service.turn_off
+        entity_id: input_boolean.s8_window_low_automation
+      - service: service.turn_off
+        entity_id: input_boolean.s8_window_top_automation
+  - alias: Alert anomalia serra 7 OFF
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.s7_state
+        to: off
+        for: "00:01:00"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.s7_state
+          threshold: off
+      - service: service.turn_on
+        entity_id: input_boolean.s7_window_low_automation
+      - service: service.turn_on
+        entity_id: input_boolean.s7_window_top_automation
+  - alias: Alert anomalia serra 8 OFF
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.s8_state
+        to: off
+        for: "00:01:00"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.s8_state
+          threshold: off
+      - service: service.turn_on
+        entity_id: input_boolean.s8_window_low_automation
+      - service: service.turn_on
+        entity_id: input_boolean.s8_window_top_automation
   #Automazioni su eventi ambientali
   - alias: Alert pioggia
     trigger:
@@ -797,233 +1308,116 @@ automation:
         event_data:
           target: sensor.w_rain_state
           threshold: WE_RAINING
-      - event: HA_CLOSE_WINDOWS_DUE_RAIN
-  - alias: Alert pioggia OFF
-    trigger:
-      - platform: state
-        entity_id: sensor.w_rain_state
-        from: WE_RAINING
-        to: WE_NOT_RAINING
-        for: "00:02:00"
-    action:
-      - event: HA_EVENT
+      - event: HA_MANAGE_WINDOWS2
         event_data:
-          target: sensor.w_rain_state
-          threshold: WE_NOT_RAINING
-      - event: HA_STOPPED_RAINING
-  - alias: Umidità serra 7
-    trigger:
-      - platform: state
-        entity_id: sensor.s7_humidity_state
-        to: HUM_NORMAL
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.s7_humidity_state
-        to: HUM_HIGH
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.s7_humidity_state
-        to: HUM_EXTREMELY_HIGH
-        for: "00:01:00"
-    condition: "{{ state_attr('sun.sun', 'elevation') > 4 }}" #TODO: DA RIVEDERE
-    action:
-      - event: HA_EVENT
-        event_data:
-          target: sensor.s7_humidity_state
-          threshold: "{{ trigger.to_state.state }}"
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.windows_greenhouse1
-          toPosition: >
-            {% if trigger.to_state.state == "HUM_NORMAL" %}
-              reset
-            {% endif %}
-          #positionDecrease: 
-          positionIncrease: >
-            {% if trigger.to_state.state == "HUM_HIGH" %}
-              {{states('input_number.s_humidity_level1')|int}} 
-            {% elif trigger.to_state.state == "HUM_EXTREMELY_HIGH" %}
-              {{states('input_number.s_humidity_level2')|int}} 
-            {% endif %}
-  - alias: Temperatura serra 7 [GIORNO]       
-    trigger:
-      - platform: state
-        entity_id: sensor.s7_temperature_state
-        to: TEMP_EXTREMELY_LOW
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.s7_temperature_state
-        to: TEMP_LOW
-        for: "00:00:10" #TODO cambiare
-      - platform: state
-        entity_id: sensor.s7_temperature_state
-        to: TEMP_NORMAL
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.s7_temperature_state
-        to: TEMP_MODERATE
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.s7_temperature_state
-        to: TEMP_HIGH
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.s7_temperature_state
-        to: TEMP_EXTREMELY_HIGH
-        for: "00:01:00"
-    #condition: "{{ state_attr('sun.sun', 'elevation') > 4 }}" #TODO: DA RIVEDERE
-    action:
-      - event: HA_EVENT
-        event_data:
-          target: sensor.s7_temperature_state
-          threshold: "{{ trigger.to_state.state }}"
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.s7_window_top
-          toPosition: >
-            {% if trigger.to_state.state == "TEMP_EXTREMELY_LOW" %}
-              {{states('input_number.s_window_top_position_temperature_day_level1')|int}} 
-            {% elif trigger.to_state.state == "TEMP_LOW" %}
-              {{states('input_number.s_window_top_position_temperature_day_level2')|int}}
-            {% elif trigger.to_state.state == "TEMP_NORMAL" %}
-              {{states('input_number.s_window_top_position_temperature_day_level3')|int}}
-            {% elif trigger.to_state.state == "TEMP_MODERATE" %}
-              {{states('input_number.s_window_top_position_temperature_day_level4')|int}}
-            {% elif trigger.to_state.state == "TEMP_HIGH" %}
-              {{states('input_number.s_window_top_position_temperature_day_level5')|int}}
-            {% elif trigger.to_state.state == "TEMP_EXTREMELY_HIGH" %}
-              {{states('input_number.s_window_top_position_temperature_day_level6')|int}}
-            {% endif %}
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.s7_window_low
-          toPosition: >
-            {% if trigger.to_state.state == "TEMP_EXTREMELY_LOW" %}
-              {{states('input_number.s_window_low_position_temperature_day_level1')|int}} 
-            {% elif trigger.to_state.state == "TEMP_LOW" %}
-              {{states('input_number.s_window_low_position_temperature_day_level2')|int}}
-            {% elif trigger.to_state.state == "TEMP_NORMAL" %}
-              {{states('input_number.s_window_low_position_temperature_day_level3')|int}}
-            {% elif trigger.to_state.state == "TEMP_MODERATE" %}
-              {{states('input_number.s_window_low_position_temperature_day_level4')|int}}
-            {% elif trigger.to_state.state == "TEMP_HIGH" %}
-              {{states('input_number.s_window_low_position_temperature_day_level5')|int}}
-            {% elif trigger.to_state.state == "TEMP_EXTREMELY_HIGH" %}
-              {{states('input_number.s_window_low_position_temperature_day_level6')|int}}
-            {% endif %}
-  - alias: Vento serra 7 [MARE]
+          event: "raining"
+          periodActive: group.s7_periods_active
+          period: group.s7_periods
+          periodTemperature: group.s7_period_temperature
+          periodWindowTopMaxOpen: group.s7_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s7_period_window_low_max_open
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_downwind_strong_window_low_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_upwind_strong_window_low_max_open
+          entities: group.windows_greenhouse7
+          openCloseTime: 
+            window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}"
+  - alias: Vento 
     trigger:
       - platform: state
         entity_id: sensor.w_wind_intensity_state
-        to: WE_WIND_INTENSITY_NONE
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.w_wind_intensity_state
-        from: WE_WIND_INTENSITY_NONE
+        # from: WE_WIND_INTENSITY_NONE
         to: WE_WIND_INTENSITY_MODERATE
         for: "00:01:00"
       - platform: state
         entity_id: sensor.w_wind_intensity_state
-        from: WE_WIND_INTENSITY_MODERATE
+        # from: WE_WIND_INTENSITY_MODERATE
         to: WE_WIND_INTENSITY_HIGH
         for: "00:01:00"
-    condition: "{{ is_state('sensor.w_wind_from_state', 'WE_WIND_SEA') }}" 
     action:
-      - event: HA_EVENT
+      - event: HA_MANAGE_WINDOWS2
         event_data:
-          target: sensor.w_wind_from_state
-          threshold: "{{ trigger.to_state.state }}"
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.s7_window_sea_side
-          positionDecrease: >
-            {% if trigger.to_state.state == "WE_WIND_INTENSITY_NONE" %}
-              reset 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_MODERATE" %}
-              {{states('input_number.s_window_top_decrease_position_wind_level1')|int}} 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_HIGH" %}
-              {{states('input_number.s_window_top_decrease_position_wind_level2')|int}} 
-            {% endif %}
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.s7_window_sea_side 
-          positionDecrease: >
-            {% if trigger.to_state.state == "WE_WIND_INTENSITY_NONE" %}
-              reset 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_MODERATE" %}
-              {{states('input_number.s_window_low_decrease_position_wind_level1')|int}} 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_HIGH" %}
-              {{states('input_number.s_window_low_decrease_position_wind_level2')|int}} 
-            {% endif %}
-  - alias: Vento serra 7 [MONTAGNA]
+          event: "wind"
+          periodActive: group.s7_periods_active
+          period: group.s7_periods
+          periodTemperature: group.s7_period_temperature
+          periodWindowTopMaxOpen: group.s7_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s7_period_window_low_max_open
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          windSensor: "{{states('sensor.w_wind_intensity_state')}}"
+          windDirectionSensor: "{{states('sensor.w_wind_from_state')}}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_downwind_strong_window_low_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_upwind_strong_window_low_max_open
+          entities: group.windows_greenhouse7
+          openCloseTime: 
+            window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}"
+  - alias: Serra 7-8 Gestione finestre / periodi
     trigger:
-      - platform: state
-        entity_id: sensor.w_wind_intensity_state
-        to: WE_WIND_INTENSITY_NONE
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.w_wind_intensity_state
-        from: WE_WIND_INTENSITY_NONE
-        to: WE_WIND_INTENSITY_MODERATE
-        for: "00:01:00"
-      - platform: state
-        entity_id: sensor.w_wind_intensity_state
-        from: WE_WIND_INTENSITY_MODERATE
-        to: WE_WIND_INTENSITY_HIGH
-        for: "00:01:00"
-    condition: "{{ is_state('sensor.w_wind_from_state', 'WE_WIND_HILL') }}" 
+      - platform: time_pattern
+        #minutes: "/{{ states('input_number.windows_automation_frequency')|int }}"
+        minutes: "/1"
     action:
-      - event: HA_EVENT
-        event_data:
-          target: sensor.w_wind_from_state
-          threshold: "{{ trigger.to_state.state }}"
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.s7_window_mountain_side
-          toPosition: >
-            {% if trigger.to_state.state == "WE_WIND_NONE" %}
-              reset
-            {% endif %}
-          #positionIncrease: 
-          positionDecrease: >
-            {% if trigger.to_state.state == "WE_WIND_INTENSITY_NONE" %}
-              reset 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_MODERATE" %}
-              {{states('input_number.s_window_top_decrease_position_wind_level1')|int}} 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_HIGH" %}
-              {{states('input_number.s_window_top_decrease_position_wind_level2')|int}} 
-            {% endif %}
-      - service: python_script.greenhouse_windows_position_management
-        data: 
-          event: "{{ trigger.to_state.state }}"
-          entities:
-            - group.s7_window_mountain_side
-          toPosition: >
-            {% if trigger.to_state.state == WE_WIND_NONE %}
-              reset
-            {% endif %}
-          #positionIncrease: 
-          positionDecrease: >
-            {% if trigger.to_state.state == "WE_WIND_INTENSITY_NONE" %}
-              reset 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_MODERATE" %}
-              {{states('input_number.s_window_low_decrease_position_wind_level1')|int}} 
-            {% elif trigger.to_state.state == "WE_WIND_INTENSITY_HIGH" %}
-              {{states('input_number.s_window_low_decrease_position_wind_level2')|int}} 
-            {% endif %}
-
+      - event: HA_MANAGE_WINDOWS2
+        event_data: 
+          event: "windows_check"
+          periodActive: group.s7_periods_active
+          period: group.s7_periods
+          periodTemperature: group.s7_period_temperature
+          temperatureTrend: "{{states('sensor.s7_temperature_trend')}}"
+          periodWindowTopMaxOpen: group.s7_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s7_period_window_low_max_open
+          valueToCheck: "{{states('sensor.s7_temperature')|int}}"
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          windSensor: "{{states('sensor.w_wind_intensity_state')}}"
+          windDirectionSensor: "{{states('sensor.w_wind_from_state')}}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_downwind_strong_window_low_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_upwind_strong_window_low_max_open
+          windowsMinStep:
+            window_top: "{{states('input_number.s7_open_close_step_window_top')|int}}"
+            window_low: "{{states('input_number.s7_open_close_step_window_low')|int}}"
+          entities: group.windows_greenhouse7
+          openCloseTime: 
+            window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}" 
+      
 
   #Automazioni sulle finestre
   - alias: Chiudi tutte le finestre
@@ -1033,12 +1427,23 @@ automation:
       - platform: event
         event_type: HA_CLOSE_WINDOWS_DUE_RAIN
     action: #script chiusura finestre  
-      - service: python_script.greenhouse_windows_position_management
-        data: 
+      - event: HA_MANAGE_WINDOWS
+        event_data:  
           event: "{{ trigger.event.event_type }}"
           entities:
-            - group.windows_greenhouse1
+            - sensor.s7_window_left_side1
+            - sensor.s7_window_front_sea_side_lx1
+            - sensor.s7_window_front_sea_side_rx1
+            - sensor.s7_window_right_side1
+            - sensor.s7_window_front_mountain_side_lx1
+            - sensor.s7_window_front_mountain_side_rx1
+            - sensor.s7_window_top1
+            - sensor.s7_window_top2
+            - sensor.s7_window_top3
+            - sensor.s7_window_top4
+#            - group.windows_greenhouse8
           toPosition: 0
+          openCloseTime: "{{states('input_number.s7_open_close_time_window_top')|int}}"
           #positionIncrease:
           #positionDecrease:
   - alias: Riposiziona tutte le finestre
@@ -1048,19 +1453,36 @@ automation:
       - platform: event
         event_type: HA_STOPPED_RAINING
     action:
-      - service: python_script.greenhouse_windows_position_management
+      - service: mqtt.publish
         data:
-          event: "{{ trigger.event.event_type }}"
-          entities:
-            - group.windows_greenhouse1
-          toPosition: reset 
+          topic: "shellies/s7Sensor2/ext_temperature/0"
+          payload: "reset"
+           
+  #automazioni sulla stazione meteo
+  - alias: Leggi dati da stazione meteo
+    trigger:
+      - platform: time_pattern
+        seconds: "59"
+    action:
+      - event: HA_MANAGE_WEATHERSTATION
 
+
+script:
+  close_all_windows_call:
+    sequence:
+      event: HA_CLOSE_WINDOWS
+  reset_all_windows:
+    sequence:
+      - event: HA_CLOSE_WINDOWS
+      - delay: "00:01:30"
+      - event: HA_WINDOWS_RESET_POSITION
+      
 #### logger configuration
 logger:
   default: info
   logs:
     homeassistant.components.cloud: debug
-    custom_components.hakafka: debug
+    custom_components.hakafka: info
     custom_components.ha-custom-events: info
 
 shell_command:
