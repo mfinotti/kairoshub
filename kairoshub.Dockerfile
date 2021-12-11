@@ -17,8 +17,14 @@ RUN mkdir -p /config/custom_components
 RUN mkdir -p /config/kairoshub
 
 WORKDIR /config/custom_components
-RUN git clone --verbose https://github.com/mfinotti/hakafka.git /config/custom_components/hakafka
-RUN git clone --verbose https://github.com/mfinotti/ha-custom-events.git /config/custom_components/ha-custom-events
+RUN wget https://github.com/mfinotti/hakafka/releases/latest/download/hakafka.zip
+RUN unzip hakafka.zip
+RUN mv hakafka-main hakafka
+
+RUN wget https://github.com/mfinotti/hakafka/releases/latest/download/ha-custom-events.zip
+RUN unzip ha-custom-events.zip
+RUN mv ha-custom-events-main ha-custom-events
+
 
 RUN mkdir -p /config/custom_components/hacs 
 WORKDIR /config/custom_components/hacs
