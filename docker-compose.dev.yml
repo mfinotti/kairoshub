@@ -22,5 +22,7 @@ services:
     container_name: appdaemon
     volumes:
       - D:\workspace\projects\python\hakairos-configuration\appdaemon:/conf
+    ports:
+      - "5678:5678"
     environment:
       - DASH_URL=http://appdaemon:5050
