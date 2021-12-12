@@ -21,7 +21,7 @@ RUN wget https://github.com/mfinotti/hakafka/releases/latest/download/hakafka.zi
 RUN unzip hakafka.zip
 RUN mv hakafka-main hakafka
 
-RUN wget https://github.com/mfinotti/hakafka/releases/latest/download/ha-custom-events.zip
+RUN wget https://github.com/mfinotti/ha-custom-events/releases/latest/download/ha-custom-events.zip
 RUN unzip ha-custom-events.zip
 RUN mv ha-custom-events-main ha-custom-events
 
