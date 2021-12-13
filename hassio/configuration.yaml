@@ -1,26 +1,4 @@
-default_config:
-
-panel_custom:
-  - name: windows-strategy-panel
-    # url_path needs to be unique for each panel_custom config
-    url_path: strategia-finestre
-    sidebar_title: Strategia Finestre
-    sidebar_icon: mdi:server
-    module_url:  /local/windows-strategy-panel.js
-    config:
-      # Data you want to make available to panel
-      hello: world
-  - name: example-panel
-    # url_path needs to be unique for each panel_custom config
-    url_path: redirect-server-controls
-    sidebar_title: Example Panel
-    sidebar_icon: mdi:server
-    module_url: /local/example-panel.js
-    config:
-      # Data you want to make available to panel
-      hello: world
-
-  
+default_config:  
         
 #### python scripts extension. Python scripts goes on folder /python_scripts
 #python_script:
@@ -608,7 +586,7 @@ sensor:
             window_type: "window_top"
       s7_temperature: #sensori per media di altri sensori
         friendly_name: "Temperatura Serra 7"
-        value_template: "{{ states('sensor.s7_temperature_sensor')|int }}"
+        value_template: "{{ states('sensor.s7_temperature_sensor') }}"
         unit_of_measurement: "°c"
       s7_humidity: #sensori per media di altri sensori
         friendly_name: "Umidità Serra 7"
@@ -1392,7 +1370,7 @@ automation:
           temperatureTrend: "{{states('sensor.s7_temperature_trend')}}"
           periodWindowTopMaxOpen: group.s7_period_window_top_max_open
           periodWindowLowMaxOpen: group.s7_period_window_low_max_open
-          valueToCheck: "{{states('sensor.s7_temperature')|int}}"
+          valueToCheck: "{{states('sensor.s7_temperature')}}"
           rainingSensor: "{{states('sensor.w_rain_state')}}"
           windSensor: "{{states('sensor.w_wind_intensity_state')}}"
           windDirectionSensor: "{{states('sensor.w_wind_from_state')}}"

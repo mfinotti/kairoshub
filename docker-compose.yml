@@ -20,7 +20,7 @@ services:
     volumes:
       - /opt/mosquitto/config:/mosquitto/config
       - /opt/mosquitto/log:/mosquitto/log
-      - /opt/mosquistto/data:/mosquitto/data
+      - /opt/mosquitto/data:/mosquitto/data
     ports:
       - "1884:1884"
       - "9001:9001"
