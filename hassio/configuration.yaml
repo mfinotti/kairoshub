@@ -1359,7 +1359,7 @@ automation:
     trigger:
       - platform: time_pattern
         #minutes: "/{{ states('input_number.windows_automation_frequency')|int }}"
-        minutes: "/1"
+        minutes: "/15"
     action:
       - event: HA_MANAGE_WINDOWS2
         event_data: 
