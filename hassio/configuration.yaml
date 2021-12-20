@@ -144,10 +144,6 @@ input_number:
     min: 0
     max: 100
     step: 1
-  s7_window_low_max_open_period_1_upwind_moderate:
-    min: 0
-    max: 100
-    step: 1
   s7_window_top_max_open_period_2_downwind_moderate:
     min: 0
     max: 100
@@ -157,10 +153,6 @@ input_number:
     max: 100
     step: 1
   s7_window_top_max_open_period_2_upwind_moderate:
-    min: 0
-    max: 100
-    step: 1
-  s7_window_low_max_open_period_2_upwind_moderate:
     min: 0
     max: 100
     step: 1
@@ -176,10 +168,6 @@ input_number:
     min: 0
     max: 100
     step: 1
-  s7_window_low_max_open_period_3_upwind_moderate:
-    min: 0
-    max: 100
-    step: 1
   s7_window_top_max_open_period_4_downwind_moderate:
     min: 0
     max: 100
@@ -189,10 +177,6 @@ input_number:
     max: 100
     step: 1
   s7_window_top_max_open_period_4_upwind_moderate:
-    min: 0
-    max: 100
-    step: 1
-  s7_window_low_max_open_period_4_upwind_moderate:
     min: 0
     max: 100
     step: 1
@@ -208,10 +192,6 @@ input_number:
     min: 0
     max: 100
     step: 1
-  s7_window_low_max_open_period_1_upwind_strong:
-    min: 0
-    max: 100
-    step: 1
   s7_window_top_max_open_period_2_downwind_strong:
     min: 0
     max: 100
@@ -221,10 +201,6 @@ input_number:
     max: 100
     step: 1
   s7_window_top_max_open_period_2_upwind_strong:
-    min: 0
-    max: 100
-    step: 1
-  s7_window_low_max_open_period_2_upwind_strong:
     min: 0
     max: 100
     step: 1
@@ -240,10 +216,6 @@ input_number:
     min: 0
     max: 100
     step: 1
-  s7_window_low_max_open_period_3_upwind_strong:
-    min: 0
-    max: 100
-    step: 1
   s7_window_top_max_open_period_4_downwind_strong:
     min: 0
     max: 100
@@ -253,10 +225,6 @@ input_number:
     max: 100
     step: 1
   s7_window_top_max_open_period_4_upwind_strong:
-    min: 0
-    max: 100
-    step: 1
-  s7_window_low_max_open_period_4_upwind_strong:
     min: 0
     max: 100
     step: 1
@@ -285,6 +253,26 @@ input_number:
     min: 0
     max: 100
     step: 1 
+  w_uv_level1:
+    name: "Uv moderato"
+    min: 0
+    max: 9
+    step: 1
+  w_uv_level2:
+    name: "Uv Alto"
+    min: 0
+    max: 9
+    step: 1 
+  w_rain_level1:
+    name: "Pioggia moderata"
+    min: 0
+    max: 100
+    step: 1
+  w_rain_level2:
+    name: "Pioggia intensa"
+    min: 0
+    max: 100
+    step: 1
   #windows current position
   s7_window_left_side1_position:
     min: 0
@@ -858,6 +846,8 @@ binary_sensor:
         max_samples: 60
         min_gradient: 0.0002
         device_class: heat
+
+
 cover:
   - platform: mqtt #s7WindowLeftSide1
     unique_id: s7_window_left_side1
@@ -1128,13 +1118,6 @@ group:
       - input_number.s7_window_top_max_open_period_2_upwind_moderate
       - input_number.s7_window_top_max_open_period_3_upwind_moderate
       - input_number.s7_window_top_max_open_period_4_upwind_moderate
-  s7_period_wind_upwind_moderate_window_low_max_open:
-    name: "Massima apertura a controvento moderato finestre laterali Serra 7"
-    entities:
-      - input_number.s7_window_low_max_open_period_1_upwind_moderate
-      - input_number.s7_window_low_max_open_period_2_upwind_moderate
-      - input_number.s7_window_low_max_open_period_3_upwind_moderate
-      - input_number.s7_window_low_max_open_period_4_upwind_moderate
   s7_period_wind_upwind_strong_window_top_max_open:
     name: "Massima apertura a controvento intenso colmi Serra 7"
     entities:
@@ -1142,13 +1125,6 @@ group:
       - input_number.s7_window_top_max_open_period_2_upwind_strong
       - input_number.s7_window_top_max_open_period_3_upwind_strong
       - input_number.s7_window_top_max_open_period_4_upwind_strong
-  s7_period_wind_upwind_strong_window_low_max_open:
-    name: "Massima apertura a controvento intenso finestre laterali Serra 7"
-    entities:
-      - input_number.s7_window_low_max_open_period_1_upwind_strong
-      - input_number.s7_window_low_max_open_period_2_upwind_strong
-      - input_number.s7_window_low_max_open_period_3_upwind_strong
-      - input_number.s7_window_low_max_open_period_4_upwind_strong
   windows_greenhouse8:
     name: "Serra 8 - Finestre"
     entities:
@@ -1306,9 +1282,6 @@ automation:
             downwind: 
               moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
               strong: group.s7_period_wind_downwind_strong_window_low_max_open
-            upwind: 
-              moderate: group.s7_period_wind_upwind_moderate_window_low_max_open
-              strong: group.s7_period_wind_upwind_strong_window_low_max_open
           entities: group.windows_greenhouse7
           openCloseTime: 
             window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
@@ -1353,19 +1326,23 @@ automation:
             downwind: 
               moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
               strong: group.s7_period_wind_downwind_strong_window_low_max_open
-            upwind: 
-              moderate: group.s7_period_wind_upwind_moderate_window_low_max_open
-              strong: group.s7_period_wind_upwind_strong_window_low_max_open
           entities: group.windows_greenhouse7
           openCloseTime: 
             window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}"
   - alias: Serra 7-8 Gestione finestre / periodi
-    trigger:
-      - platform: time_pattern
-        #minutes: "/{{ states('input_number.windows_automation_frequency')|int }}"
-        minutes: "/1"
+    # trigger:
+    #   - platform: time_pattern
+    #     minutes: "{{ states('input_number.windows_automation_frequency')|int }}"
+        #minutes: "/1"
         #minutes: "/15"
+    trigger: 
+      - platform: time_pattern
+        minutes: /1
+    condition:
+      - condition: template
+        value_template: >
+          {{ now().minute % states('input_number.windows_automation_frequency')|int == 0}}
     action:
       - event: HA_MANAGE_WINDOWS2
         event_data: 
@@ -1394,9 +1371,6 @@ automation:
             downwind: 
               moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
               strong: group.s7_period_wind_downwind_strong_window_low_max_open
-            upwind: 
-              moderate: group.s7_period_wind_upwind_moderate_window_low_max_open
-              strong: group.s7_period_wind_upwind_strong_window_low_max_open
           windowsMinStep:
             window_top: "{{states('input_number.s7_open_close_step_window_top')|int}}"
             window_low: "{{states('input_number.s7_open_close_step_window_low')|int}}"
