@@ -29,12 +29,124 @@ input_text:
     name: "Identificativo Sistema"
   system_name: 
     name: "Agricola Futura"
+  ############################################################
+  ################### Serra 8 ################################
+  ############################################################  
+  s8_window1:
+    name: "id"
+  s8_window1_name:
+    name: "Nome"
+  s8_window1_topic:
+    name: "Topic"
+    initial: "shellies/s8WindowFrontSeaSide1/roller/0/command"
+  s8_window2:
+    name: "id"
+  s8_window2_name:
+    name: "Nome"
+  s8_window2_topic:
+    name: "Topic"
+    initial: "shellies/s8WindowFrontMountainSide1/roller/0/command"
+  s8_window3:
+    name: "id"
+  s8_window3_name:
+    name: "Nome"
+  s8_window3_topic:
+    name: "Topic"
+    initial: "shellies/s8WindowRightSide1/roller/0/command"
+  s8_window4:
+    name: "id"
+  s8_window4_name:
+    name: "Nome"
+  s8_window4_topic:
+    name: "Topic"
+    initial: "shellies/s8WindowLeftSide1/roller/0/command"
+  s8_window5:
+    name: "id"
+  s8_window5_name:
+    name: "Nome"
+  s8_window5_topic:
+    name: "Topic"
+    initial: "shellies/s8WindowTop1/roller/0/command"
+  s8_window6:
+    name: "id"
+  s8_window6_name:
+    name: "Nome"
+  s8_window6_topic:
+    name: "Topic"
+    initial: "shellies/s8WindowTop2/roller/0/command"
+  ############################################################
+  ################### Serra 7 ################################
+  ############################################################  
   s7_window1:
-    name: "window 1"
+    name: "id"
+  s7_window1_name:
+    name: "Nome"
   s7_window1_topic:
-    name: "window 1 topic"
-  s7_window1_entity_ref: 
-    name: "window 1 entity ref"
+    name: "Topic"
+    initial: "shellies/s7WindowLeftSide1/roller/0/command"
+  s7_window2:
+    name: "id"
+  s7_window2_name:
+    name: "Nome"
+  s7_window2_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowRightSide1/roller/0/command"
+  s7_window3:
+    name: "id"
+  s7_window3_name:
+    name: "Nome"
+  s7_window3_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowFrontSeaSideLx1/roller/0/command"
+  s7_window4:
+    name: "id"
+  s7_window4_name:
+    name: "Nome"
+  s7_window4_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowFrontSeaSideRx1/roller/0/command"
+  s7_window5:
+    name: "id"
+  s7_window5_name:
+    name: "Nome"
+  s7_window5_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowFrontMountainSideLx1/roller/0/command"
+  s7_window6:
+    name: "id"
+  s7_window6_name:
+    name: "Nome"
+  s7_window6_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowFrontMountainSideRx1/roller/0/command"
+  s7_window7:
+    name: "id"
+  s7_window7_name:
+    name: "Nome"
+  s7_window7_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowTop1/roller/0/command"
+  s7_window8:
+    name: "id"
+  s7_window8_name:
+    name: "Nome"
+  s7_window8_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowTop2/roller/0/command"
+  s7_window9:
+    name: "id"
+  s7_window9_name:
+    name: "Nome"
+  s7_window9_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowTop3/roller/0/command"
+  s7_window10:
+    name: "id"
+  s7_window10_name:
+    name: "Nome"
+  s7_window10_topic:
+    name: "Topic"
+    initial: "shellies/s7WindowTop4/roller/0/command"
 
 ##### input number entities
 input_number:
@@ -49,9 +161,6 @@ input_number:
     min: 5
     max: 60
     step: 5
-  s7_window1_position:
-    min: 0
-    max: 100
   #######################################
   ############# Serra 7 #################
   #######################################
@@ -395,26 +504,91 @@ input_number:
     min: 0
     max: 100
     step: 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
+  
+  s8_window1_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s8_window2_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s8_window3_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s8_window4_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s8_window5_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s8_window6_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window1_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window2_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window3_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window4_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window5_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window6_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window7_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window8_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window9_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1
+  s7_window10_position:
+    name: "Posizione corrente"
+    min: 0
+    max: 100
+    step: 1  
+  
+  
+  
   ######### range umidità ########################
   s_humidity_level1:
     name: "Umidità alta ( 0 < h < vento moderato)"
@@ -488,25 +662,6 @@ input_number:
   s7_window_top1_position:
     min: 0
     max: 100
-  s8_window_front_sea_side1_position:
-    min: 0
-    max: 100
-  s8_window_front_mountain_side1_position:
-    min: 0
-    max: 100
-  s8_window_right_side1_position:
-    min: 0
-    max: 100
-  s8_window_left_side1_position:
-    min: 0
-    max: 100
-  s8_window_top1_position:
-    min: 0
-    max: 100
-  s8_window_top2_position:
-    min: 0
-    max: 100
-
   
 input_datetime:
   s7_period_1:
@@ -583,10 +738,131 @@ input_select:
       - Sud Ovest
       - Ovest
       - Nord Ovest    
+  s8_window1_type:
+    options: 
+      - window_top
+      - window_low
+  s8_window2_type:
+    options: 
+      - window_top
+      - window_low
+  s8_window3_type:
+    options: 
+      - window_top
+      - window_low
+  s8_window4_type:
+    options: 
+      - window_top
+      - window_low
+  s8_window5_type:
+    options: 
+      - window_top
+      - window_low
+  s8_window6_type:
+    options: 
+      - window_top
+      - window_low
+  s8_window1_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s8_window2_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s8_window3_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s8_window4_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s8_window5_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s8_window6_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+
   s7_window1_type:
     options: 
       - window_top
       - window_low
+  s7_window2_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window3_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window4_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window5_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window6_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window7_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window8_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window9_type:
+    options: 
+      - window_top
+      - window_low
+  s7_window10_type:
+    options: 
+      - window_top
+      - window_low                    
   s7_window1_orientation:
     options:
       - Nord
@@ -597,6 +873,97 @@ input_select:
       - Sud Ovest
       - Ovest
       - Nord Ovest
+  s7_window2_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window3_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window4_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window5_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window6_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window7_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window8_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest      
+  s7_window9_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+  s7_window10_orientation:
+    options:
+      - Nord
+      - Nord Est
+      - Est
+      - Sud Est
+      - Sud
+      - Sud Ovest
+      - Ovest
+      - Nord Ovest
+
 
 ##### input boolean entities 
 input_boolean:
@@ -627,6 +994,40 @@ input_boolean:
     name: "Automazioni colmi Serra 8"
   s8_window_low_automation:  
     name: "Automazioni finestre laterali Serra 8"
+  s8_window1_active:
+    name: "In funzione"
+  s8_window2_active:
+    name: "In funzione"
+  s8_window3_active:
+    name: "In funzione"
+  s8_window4_active:
+    name: "In funzione"
+  s8_window5_active:
+    name: "In funzione"
+  s8_window6_active:  
+    name: "In funzione"
+  
+  s7_window1_active:
+    name: "In funzione"
+  s7_window2_active:
+    name: "In funzione"
+  s7_window3_active:
+    name: "In funzione"
+  s7_window4_active:
+    name: "In funzione"
+  s7_window5_active:
+    name: "In funzione"
+  s7_window6_active:  
+    name: "In funzione"  
+  s7_window7_active:  
+    name: "In funzione"
+  s7_window8_active:  
+    name: "In funzione"
+  s7_window9_active:  
+    name: "In funzione"
+  s7_window10_active:  
+    name: "In funzione"
+
 
 sensor:
   #######################################
@@ -703,116 +1104,67 @@ sensor:
       #######################################
       ############# Serra 7 #################
       #######################################
-      s7_window_left_side1:
+      frontend_s7_window_left_side1:
           friendly_name: "Laterale SX "
           unique_id: s7_window_left_side1
-          value_template: "{{ states('input_number.s7_window_left_side1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window1_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowLeftSide1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_left_side1_position
-            orientation: "Est"
-            window_type: "window_low"
-      s7_window_right_side1:
+      frontend_s7_window_right_side1:
           friendly_name: "Laterale DX"
           unique_id: s7_window_right_side1
-          value_template: "{{ states('input_number.s7_window_right_side1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window2_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowRightSide1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_right_side1_position
-            orientation: "Ovest"
-            window_type: "window_low"
-      s7_window_front_sea_side_lx1:
+      frontend_s7_window_front_sea_side_lx1:
           friendly_name: "Frontale SX Mare"
           unique_id: s7_window_front_sea_side_lx1
-          value_template: "{{ states('input_number.s7_window_front_sea_side_lx1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window3_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowFrontSeaSideLx1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_front_sea_side_lx1_position
-            orientation: "Sud" #piu probabilmente Sud Est
-            window_type: "window_low"
-      s7_window_front_sea_side_rx1:
+      frontend_s7_window_front_sea_side_rx1:
           friendly_name: "Frontale DX Mare"
           unique_id: s7_window_front_sea_side_rx1
-          value_template: "{{ states('input_number.s7_window_front_sea_side_rx1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window4_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowFrontSeaSideRx1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_front_sea_side_rx1_position
-            orientation: "Sud" #piu probabilmente Sud Ovest
-            window_type: "window_low"
-      s7_window_front_mountain_side_lx1:
+      frontend_s7_window_front_mountain_side_lx1:
           friendly_name: "Frontale SX Monte"
           unique_id: s7_window_front_mountain_side_lx1
-          value_template: "{{ states('input_number.s7_window_front_mountain_side_lx1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window5_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowFrontMountainSideLx1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_front_mountain_side_lx1_position
-            orientation: "Nord" #piu probabilmente Nord Est
-            window_type: "window_low"
-      s7_window_front_mountain_side_rx1:
+      frontend_s7_window_front_mountain_side_rx1:
           friendly_name: "Frontale DX Monte"
           unique_id: s7_window_front_mountain_side_rx1
-          value_template: "{{ states('input_number.s7_window_front_mountain_side_rx1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window6_position')|int }}"
           unit_of_measurement: "%"
-          icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowFrontMountainSideRx1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_front_mountain_side_rx1_position
-            orientation: "Nord" #piu probabilmente Nord Ovest
-            window_type: "window_low"
-      s7_window_top1:
+          icon_template: mdi:percent"
+      frontend_s7_window_top1:
           friendly_name: "Colmo 1"
           unique_id: s7_window_top1
-          value_template: "{{ states('input_number.s7_window_top1_position')|int }}"
+          value_template: "{{ states('input_number.s7_window7_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowTop1/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_top1_position
-            orientation: "Nord" 
-            window_type: "window_top"
-      s7_window_top2:
+      frontend_s7_window_top2:
           friendly_name: "Colmo 2"
           unique_id: s7_window_top2
-          value_template: "{{ states('input_number.s7_window_top2_position')|int }}"
+          value_template: "{{ states('input_number.s7_window8_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowTop2/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_top2_position
-            orientation: "Nord" 
-            window_type: "window_top"
-      s7_window_top3:
+      frontend_s7_window_top3:
           friendly_name: "Colmo 4"
           unique_id: s7_window_top3
-          value_template: "{{ states('input_number.s7_window_top3_position')|int }}"
+          value_template: "{{ states('input_number.s7_window9_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowTop3/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_top3_position
-            orientation: "Nord" 
-            window_type: "window_top"
-      s7_window_top4:
+
+      frontend_s7_window_top4:
           friendly_name: "Colmo 3"
           unique_id: s7_window_top4
-          value_template: "{{ states('input_number.s7_window_top4_position')|int }}"
+          value_template: "{{ states('input_number.s7_window10_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s7WindowTop4/roller/0/command"
-            entityStateToUpdate: input_number.s7_window_top4_position
-            orientation: "Nord"
-            window_type: "window_top"
       s7_temperature: #sensori per media di altri sensori
         friendly_name: "Temperatura Serra 7"
         value_template: "{{ states('sensor.s7_temperature_sensor') }}"
@@ -839,72 +1191,42 @@ sensor:
       #######################################
       ############# Serra 8 #################
       #######################################
-      s8_window_front_sea_side1:
+      frontend_s8_window_front_sea_side1:
           friendly_name: "Frontale lato Mare"
-          unique_id: s8_window_front_sea_side1
-          value_template: "{{ states('input_number.s8_window_front_sea_side1_position')|int }}"
+          unique_id: frontend_s8_window_front_sea_side1
+          value_template: "{{ states('input_number.s8_window1_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s8WindowFrontSeaSide1/roller/0/command"
-            entityStateToUpdate: input_number.s8_window_front_sea_side1_position
-            orientation: "Nord"
-            window_type: "window_low"
-      s8_window_front_mountain_side1:
+      frontend_s8_window_front_mountain_side1:
           friendly_name: "Frontale lato Monte"
-          unique_id: s8_window_front_mountain_side1
-          value_template: "{{ states('input_number.s8_window_front_mountain_side1_position')|int }}"
+          unique_id: frontend_s8_window_front_mountain_side1
+          value_template: "{{ states('input_number.s8_window2_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s8WindowFrontMountainSide1/roller/0/command"
-            entityStateToUpdate: input_number.s8_window_front_mountain_side1_position
-            orientation: "Nord"
-            window_type: "window_low"
-      s8_window_right_side1:
+      frontend_s8_window_right_side1:
           friendly_name: "Laterale DX"
-          unique_id: s8_window_right_side1
-          value_template: "{{ states('input_number.s8_window_right_side1_position')|int }}"
+          unique_id: frontend_s8_window_right_side1
+          value_template: "{{ states('input_number.s8_window3_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s8WindowRightSide1/roller/0/command"
-            entityStateToUpdate: input_number.s8_window_right_side1_position
-            orientation: "Nord"
-            window_type: "window_low"
-      s8_window_left_side1:
+      frontend_s8_window_left_side1:
           friendly_name: "Laterale SX"
-          unique_id: s8_window_left_side1
-          value_template: "{{ states('input_number.s8_window_left_side1_position')|int }}"
+          unique_id: frontend_s8_window_left_side1
+          value_template: "{{ states('input_number.s8_window4_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s8WindowLeftSide1/roller/0/command"
-            entityStateToUpdate: input_number.s8_window_left_side1_position
-            orientation: "Nord"
-            window_type: "window_low"
-      s8_window_top1:
+      frontend_s8_window_top1:
           friendly_name: "Colmo 1"
-          unique_id: s8_window_top1
-          value_template: "{{ states('input_number.s8_window_top1_position')|int }}"
+          unique_id: frontend_s8_window_top1
+          value_template: "{{ states('input_number.s8_window5_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s8WindowTop1/roller/0/command"
-            entityStateToUpdate: input_number.s8_window_top1_position
-            orientation: "Nord"
-            window_type: "window_low"
-      s8_window_top2:
+      frontend_s8_window_top2:
           friendly_name: "Colmo 2"
-          unique_id: s8_window_top2
-          value_template: "{{ states('input_number.s8_window_top2_position')|int }}"
+          unique_id: frontend_s8_window_top2
+          value_template: "{{ states('input_number.s8_window6_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-          attribute_templates:
-            command_topic: "shellies/s8WindowTop2/roller/0/command"
-            entityStateToUpdate: input_number.s8_window_top2_position
-            orientation: "Nord"
-            window_type: "window_low"
       s8_temperature: #sensori per media di altri sensori
         friendly_name: "Temperatura Serra 8"
         value_template: "{{ states('sensor.s8_temperature_sensor')|int }}" #TODO: rivedere nome
@@ -991,7 +1313,7 @@ sensor:
           {% endif %}
       w_wind_intensity_state:
         value_template: >
-          {% if states('sensor.ws_wind_speed_sensor')|int >= 0 and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level1')|int %}
+          {% if states('sensor.ws_wind_speed_sensor') == 'unknown' or (states('sensor.ws_wind_speed_sensor')|int >= 0 and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level1')|int) %}
             WE_WIND_INTENSITY_NONE
           {% elif states('sensor.ws_wind_speed_sensor')|int > states('input_number.w_wind_level1')|int and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level2')|int %}
             WE_WIND_INTENSITY_MODERATE
@@ -1315,24 +1637,16 @@ group:
   windows_greenhouse7:
     name: "Serra 7 - Finestre"
     entities:
-      - group.s7_window_top
-      - group.s7_window_low
-  s7_window_top:
-    name: "Serra 7 - Colmi"
-    entities:
-      - sensor.s7_window_top1
-      - sensor.s7_window_top2
-      - sensor.s7_window_top3
-      - sensor.s7_window_top4
-  s7_window_low:
-    name: "Serra 7 - Finestre basse"
-    entities:
-      - sensor.s7_window_right_side1
-      - sensor.s7_window_front_mountain_side_lx1
-      - sensor.s7_window_front_mountain_side_rx1
-      - sensor.s7_window_left_side1
-      - sensor.s7_window_front_sea_side_lx1
-      - sensor.s7_window_front_sea_side_rx1
+      - input_text.s7_window1
+      - input_text.s7_window2
+      - input_text.s7_window3
+      - input_text.s7_window4
+      - input_text.s7_window5
+      - input_text.s7_window6
+      - input_text.s7_window7
+      - input_text.s7_window8
+      - input_text.s7_window9
+      - input_text.s7_window10
   # wind upwind / downwind groups
   s7_period_wind_downwind_moderate_window_top_max_open:
     name: "Massima apertura a sottovento moderato colmi Serra 7"
@@ -1417,20 +1731,13 @@ group:
   windows_greenhouse8:
     name: "Serra 8 - Finestre"
     entities:
-      - group.s8_window_top
-      - group.s8_window_low
-  s8_window_top:
-    name: "Serra 8 - Colmi"
-    entities:
-      - sensor.s8_window_top1
-      - sensor.s8_window_top2
-  s8_window_low:
-    name: "Serra 8 - Finestre basse"
-    entities:
-      - sensor.s8_window_right_side1
-      - sensor.s8_window_front_mountain_side1
-      - sensor.s8_window_left_side1
-      - sensor.s8_window_front_sea_side1
+      - input_text.s8_window1
+      - input_text.s8_window2
+      - input_text.s8_window3
+      - input_text.s8_window4
+      - input_text.s8_window5
+      - input_text.s8_window6
+
   # wind upwind / downwind groups
   s8_period_wind_downwind_moderate_window_top_max_open:
     name: "Massima apertura a sottovento moderato colmi Serra 7"
@@ -1717,7 +2024,7 @@ automation:
         value_template: >
           {{ now().minute % states('input_number.windows_automation_frequency')|int == 0}}
     action:
-      - event: HA_MANAGE_WINDOWS2
+      - event: HA_MANAGE_WINDOWS3
         event_data: 
           event: "windows_check"
           periodActive: group.s7_periods_active
@@ -1751,7 +2058,7 @@ automation:
           openCloseTime: 
             window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}" 
-      - event: HA_MANAGE_WINDOWS2
+      - event: HA_MANAGE_WINDOWS3
         event_data: 
           event: "windows_check"
           periodActive: group.s8_periods_active
@@ -1781,7 +2088,7 @@ automation:
           windowsMinStep:
             window_top: "{{states('input_number.s8_open_close_step_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_step_window_low')|int}}"
-          entities: group.windows_greenhouse7
+          entities: group.windows_greenhouse8
           openCloseTime: 
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
