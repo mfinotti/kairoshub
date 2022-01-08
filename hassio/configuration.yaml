@@ -1091,8 +1091,8 @@ sensor:
     state_topic: "shellies/XXXXXXX/ext_humidity/0"
     device_class: humidity
   - platform: mqtt
-    name: s8_temperature_sensor #TODO: DA rivedere nomi
-    state_topic: "shellies/YYYYYYY/ext_temperature/0"
+    name: s8_temperature_sensor
+    state_topic: "shellies/s8Sensor1/ext_temperature/0"
     device_class: temperature
   - platform: mqtt
     name: s8Soilmoisture_sensor #TODO: DA rivedere nomi
