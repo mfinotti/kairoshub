@@ -1314,7 +1314,7 @@ sensor:
         value_template: >
           {% if states('sensor.ws_wind_speed_sensor') == 'unknown' or (states('sensor.ws_wind_speed_sensor')|int >= 0 and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level1')|int) %}
             WE_WIND_INTENSITY_NONE
-          {% elif states('sensor.ws_wind_speed_sensor')|int > states('input_number.w_wind_level1')|int and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level2')|int %}
+          {% elif states('sensor.ws_wind_speed_sensor')|int >= states('input_number.w_wind_level1')|int and states('sensor.ws_wind_speed_sensor')|int < states('input_number.w_wind_level2')|int %}
             WE_WIND_INTENSITY_MODERATE
           {% elif states('sensor.ws_wind_speed_sensor')|int >= states('input_number.w_wind_level2')|int %}
             WE_WIND_INTENSITY_HIGH
@@ -1881,7 +1881,14 @@ automation:
         entity_id: input_boolean.s8_window_low_automation
       - service: service.turn_on
         entity_id: input_boolean.s8_window_top_automation
-  #Automazioni su eventi ambientali
+  
+#Automazioni su eventi ambientali
+
+################################################
+################################################
+###     Automazione pioggia
+################################################
+################################################
   - alias: Alert pioggia
     trigger:
       - platform: state
@@ -1948,29 +1955,33 @@ automation:
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
 
+################################################
+################################################
+###     Automazione Vento
+################################################
+################################################
   - alias: Vento 
     trigger:
       - platform: state
         entity_id: sensor.w_wind_intensity_state
         # from: WE_WIND_INTENSITY_NONE
         to: WE_WIND_INTENSITY_MODERATE
-        #for: "00:01:00"
-        for: "00:00:10"
+        for: "00:01:00"
       - platform: state
         entity_id: sensor.w_wind_intensity_state
         # from: WE_WIND_INTENSITY_MODERATE
         to: WE_WIND_INTENSITY_HIGH
-        #for: "00:01:00"
-        for: "00:00:10"
+        for: "00:01:00"
     action:
-      - event: HA_MANAGE_WINDOWS2
-        event_data:
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
           event: "wind"
           periodActive: group.s7_periods_active
           period: group.s7_periods
           periodTemperature: group.s7_period_temperature
           periodWindowTopMaxOpen: group.s7_period_window_top_max_open
           periodWindowLowMaxOpen: group.s7_period_window_low_max_open
+          #valueToCheck: "{{states('sensor.s7_temperature')}}"
           rainingSensor: "{{states('sensor.w_rain_state')}}"
           windSensor: "{{states('sensor.w_wind_intensity_state')}}"
           windDirectionSensor: "{{states('sensor.w_wind_direction')}}"
@@ -1991,15 +2002,16 @@ automation:
           entities: group.windows_greenhouse7
           openCloseTime: 
             window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
-            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}"
-      - event: HA_MANAGE_WINDOWS2
-        event_data:
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}" 
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
           event: "wind"
           periodActive: group.s8_periods_active
           period: group.s8_periods
           periodTemperature: group.s8_period_temperature
           periodWindowTopMaxOpen: group.s8_period_window_top_max_open
           periodWindowLowMaxOpen: group.s8_period_window_low_max_open
+          #valueToCheck: "{{states('sensor.s8_temperature')}}"
           rainingSensor: "{{states('sensor.w_rain_state')}}"
           windSensor: "{{states('sensor.w_wind_intensity_state')}}"
           windDirectionSensor: "{{states('sensor.w_wind_direction')}}"
@@ -2017,7 +2029,7 @@ automation:
             downwind: 
               moderate: group.s8_period_wind_downwind_moderate_window_low_max_open
               strong: group.s8_period_wind_downwind_strong_window_low_max_open
-          entities: group.windows_greenhouse7
+          entities: group.windows_greenhouse8
           openCloseTime: 
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"    
