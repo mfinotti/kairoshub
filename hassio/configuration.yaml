@@ -1084,7 +1084,6 @@ sensor:
   #######################################
   ############# Serra 8 #################
   #######################################
-  #TODO: DA RIVEDERE MOTORI e NOMI
   # temperatura / umidità
   - platform: mqtt #TODO: DA rivedere nomi
     name: "s8_humidity_sensor"
@@ -1274,9 +1273,9 @@ sensor:
           {% else %}
             {{ states('sensor.ws_wind_gust_sensor')|int }}
           {% endif %}
-      w_rain_intensity_frontend:
+      w_rain_intensity_frontend: #TODO: sistemare con parametro ambientale
         value_template: >
-          {% if states('sensor.ws_rain_sensor')|int == 0 %}
+          {% if states('sensor.ws_rain_sensor')|int == 0 %} 
             ASSENTE
           {% elif states('sensor.ws_rain_sensor')|int <= 10 %}
             PIOGGIA DEBOLE
@@ -1894,8 +1893,8 @@ automation:
         event_data:
           target: sensor.w_rain_state
           threshold: WE_RAINING
-      - event: HA_MANAGE_WINDOWS2
-        event_data:
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
           event: "raining"
           periodActive: group.s7_periods_active
           period: group.s7_periods
@@ -1903,6 +1902,9 @@ automation:
           periodWindowTopMaxOpen: group.s7_period_window_top_max_open
           periodWindowLowMaxOpen: group.s7_period_window_low_max_open
           rainingSensor: "{{states('sensor.w_rain_state')}}"
+          structure_orientation:
+            downwind: "{{ states('input_select.s7_downwind') }}"
+            upwind: "{{ states('input_select.s7_upwind') }}"
           periodWindWindowTopMaxOpen: 
             downwind: 
               moderate: group.s7_period_wind_downwind_moderate_window_top_max_open
@@ -1917,9 +1919,9 @@ automation:
           entities: group.windows_greenhouse7
           openCloseTime: 
             window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
-            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}"
-      - event: HA_MANAGE_WINDOWS2
-        event_data:
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}" 
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
           event: "raining"
           periodActive: group.s8_periods_active
           period: group.s8_periods
@@ -1927,6 +1929,9 @@ automation:
           periodWindowTopMaxOpen: group.s8_period_window_top_max_open
           periodWindowLowMaxOpen: group.s8_period_window_low_max_open
           rainingSensor: "{{states('sensor.w_rain_state')}}"
+          structure_orientation:
+            downwind: "{{ states('input_select.s8_downwind') }}"
+            upwind: "{{ states('input_select.s8_upwind') }}"
           periodWindWindowTopMaxOpen: 
             downwind: 
               moderate: group.s8_period_wind_downwind_moderate_window_top_max_open
@@ -1938,10 +1943,11 @@ automation:
             downwind: 
               moderate: group.s8_period_wind_downwind_moderate_window_low_max_open
               strong: group.s8_period_wind_downwind_strong_window_low_max_open
-          entities: group.windows_greenhouse7
+          entities: group.windows_greenhouse8
           openCloseTime: 
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
+
   - alias: Vento 
     trigger:
       - platform: state
