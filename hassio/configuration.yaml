@@ -1028,6 +1028,13 @@ input_boolean:
   s7_window10_active:  
     name: "In funzione"
 
+  #kairosgreen nodes group
+  # platform: group
+  # name: Stazioni Rilevamento S8
+  # device_class: connectivity
+  # entities:
+  #   - binary_sensor.kgnode_agrfut_s8_01
+
 
 sensor:
   #######################################
@@ -1085,18 +1092,30 @@ sensor:
   ############# Serra 8 #################
   #######################################
   # temperatura / umidità
-  - platform: mqtt #TODO: DA rivedere nomi
-    name: "s8_humidity_sensor"
-    state_topic: "shellies/XXXXXXX/ext_humidity/0"
+  - name: s8_humidity_sensor
+    platform: mqtt
+    state_topic: "dummy_topic"
     device_class: humidity
-  - platform: mqtt
-    name: s8_temperature_sensor
-    state_topic: "shellies/s8Sensor1/ext_temperature/0"
+  - name: s8_temperature_sensor
     device_class: temperature
-  - platform: mqtt
-    name: s8Soilmoisture_sensor #TODO: DA rivedere nomi
-    state_topic: "YYYYYYY/ext_temperature/0"
+    platform: mqtt
+    state_topic: "dummy_topic"
+  - name: s8_hic_sensor
+    device_class: temperature
+    platform: mqtt
+    state_topic: "dummy_topic"
+  - name: s8_soilmoisture_sensor 
+    platform: mqtt
+    state_topic: "dummy_topic"
     device_class: humidity 
+  - name: s8_soiltemperature_sensor 
+    device_class: temperature
+    platform: mqtt
+    state_topic: "dummy_topic"
+  - name: s8_soilec_sensor 
+    device_class: temperature 
+    platform: mqtt
+    state_topic: "dummy_topic"
   # sensor template
   - platform: template #TODO: DA rivedere range di valori
     sensors:
@@ -1157,7 +1176,6 @@ sensor:
           value_template: "{{ states('input_number.s7_window9_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
-
       frontend_s7_window_top4:
           friendly_name: "Colmo 3"
           unique_id: s7_window_top4
@@ -1171,8 +1189,7 @@ sensor:
       s7_humidity: #sensori per media di altri sensori
         friendly_name: "Umidità Serra 7"
         value_template: "{{ states('sensor.s7_humidity_sensor')|int }}" 
-        unit_of_measurement: "%"
-          
+        unit_of_measurement: "%"        
       s7_soilmoisture_sensor: #sensori per media di altri sensori
         friendly_name: "Umidità del terreno"
         value_template: "{{ states('sensor.s7Soilmoisture_sensor')|int }}" #TODO: rivedere nome
@@ -1234,10 +1251,22 @@ sensor:
         friendly_name: "Umidità Serra 8"
         value_template: "{{ states('sensor.s8_humidity_sensor')|int }}" #TODO: rivedere nome
         unit_of_measurement: "%"      
-      s8_soilmoisture_sensor: #sensori per media di altri sensori
-        friendly_name: "Umidità del terreno"
-        value_template: "{{ states('sensor.s8Soilmoisture_sensor')|int }}" #TODO: rivedere nome
+      s8_hic: #temperatura percepita
+        friendly_name: "Temperatura Percepita"
+        value_template: "{{ states('sensor.s8_hic_sensor') }}" #TODO: rivedere nome
         unit_of_measurement: "°c"
+      s8_soil_moisture: #sensori per media di altri sensori
+        friendly_name: "Umidità del terreno"
+        value_template: "{{ states('sensor.s8_soilmoisture_sensor')|int }}" #TODO: rivedere nome
+        unit_of_measurement: "%"
+      s8_soil_temperature: #sensori per media di altri sensori
+        friendly_name: "Temperatura del terreno"
+        value_template: "{{ states('sensor.s8_soiltemperature_sensor') }}" 
+        unit_of_measurement: "°c"
+      s8_soil_ec: #sensori per media di altri sensori
+        friendly_name: "EC"
+        value_template: "{{ states('sensor.s8_soiltemperature_sensor') }}" 
+        unit_of_measurement: "mS/cm"
       s8_temperature_trend:
         friendly_name: "Trend temperatura (30 min)"
         value_template: >-
@@ -1334,6 +1363,20 @@ sensor:
           {% endif %}
 
 binary_sensor:
+  #kairosgreen gateway
+  - name: kt_gateway_000001
+    platform: mqtt
+    state_topic: "kairostech/nodes/kt_gateway_000001/online"
+    payload_on: "on"
+    payload_on: "off"
+    device_class: connectivity
+  #kairosgreen nodes
+  - name: kt_node_000001
+    platform: mqtt
+    state_topic: "kairostech/nodes/kt_node_000001/online"
+    payload_on: "on"
+    payload_on: "off"
+    device_class: connectivity
   #S7
   - platform: mqtt #s7_blackout
     name: s7_blackout  
@@ -1419,7 +1462,11 @@ binary_sensor:
         max_samples: 60
         min_gradient: 0.0002
         device_class: heat
-
+  - platform: group
+    name: Stazioni Rilevamento S8
+    device_class: connectivity
+    entities:
+      - binary_sensor.kt_node_000001
 cover:
   - platform: mqtt #s7WindowLeftSide1
     unique_id: s7_window_left_side1
@@ -2158,16 +2205,15 @@ automation:
     action:
       - event: HA_MANAGE_WEATHERSTATION
 
-
-script:
-  close_all_windows_call:
-    sequence:
-      event: HA_CLOSE_WINDOWS
-  reset_all_windows:
-    sequence:
-      - event: HA_CLOSE_WINDOWS
-      - delay: "00:01:30"
-      - event: HA_WINDOWS_RESET_POSITION
+  #automazione messaggi kairosgreen node
+  - alias: Leggi dati da stazioni Rilevamento
+    trigger: 
+      - platform: mqtt
+        topic: "kairostech/nodes/data"
+    action:
+      - event: APPDAEMON_KGNODE_MQTT_INTERNAL_MESSAGE
+        event_data:
+          payload: "{{ trigger.payload }}"
       
 #### logger configuration
 logger:
@@ -2177,6 +2223,6 @@ logger:
     custom_components.hakafka: info
     custom_components.ha-custom-events: info
 
-shell_command:
-  entity_metrics: "python3 ./hakairos-configuration/scripts/entityMetrics.py"
-  system_metrics: "python3 ./hakairos-configuration/scripts/systemMetrics.py"
+# shell_command:
+#   entity_metrics: "python3 ./hakairos-configuration/scripts/entityMetrics.py"
+#   system_metrics: "python3 ./hakairos-configuration/scripts/systemMetrics.py"
