@@ -1245,7 +1245,7 @@ sensor:
           icon_template: mdi:percent
       s8_temperature: #sensori per media di altri sensori
         friendly_name: "Temperatura Serra 8"
-        value_template: "{{ states('sensor.s8_temperature_sensor')|int }}" #TODO: rivedere nome
+        value_template: "{{ states('sensor.s8_temperature_sensor') }}"
         unit_of_measurement: "°c"
       s8_humidity: #sensori per media di altri sensori
         friendly_name: "Umidità Serra 8"
