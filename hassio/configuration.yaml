@@ -1124,61 +1124,61 @@ sensor:
       #######################################
       frontend_s7_window_left_side1:
           friendly_name: "Laterale SX "
-          unique_id: s7_window_left_side1
+          unique_id: frontend_s7_window_left_side1
           value_template: "{{ states('input_number.s7_window1_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_right_side1:
           friendly_name: "Laterale DX"
-          unique_id: s7_window_right_side1
+          unique_id: frontend_s7_window_right_side1
           value_template: "{{ states('input_number.s7_window2_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_front_sea_side_lx1:
           friendly_name: "Frontale SX Mare"
-          unique_id: s7_window_front_sea_side_lx1
+          unique_id: frontend_s7_window_front_sea_side_lx1
           value_template: "{{ states('input_number.s7_window3_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_front_sea_side_rx1:
           friendly_name: "Frontale DX Mare"
-          unique_id: s7_window_front_sea_side_rx1
+          unique_id: frontend_s7_window_front_sea_side_rx1
           value_template: "{{ states('input_number.s7_window4_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_front_mountain_side_lx1:
           friendly_name: "Frontale SX Monte"
-          unique_id: s7_window_front_mountain_side_lx1
+          unique_id: frontend_s7_window_front_mountain_side_lx1
           value_template: "{{ states('input_number.s7_window5_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_front_mountain_side_rx1:
           friendly_name: "Frontale DX Monte"
-          unique_id: s7_window_front_mountain_side_rx1
+          unique_id: frontend_s7_window_front_mountain_side_rx1
           value_template: "{{ states('input_number.s7_window6_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent"
       frontend_s7_window_top1:
           friendly_name: "Colmo 1"
-          unique_id: s7_window_top1
+          unique_id: frontend_s7_window_top1
           value_template: "{{ states('input_number.s7_window7_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_top2:
           friendly_name: "Colmo 2"
-          unique_id: s7_window_top2
+          unique_id: frontend_s7_window_top2
           value_template: "{{ states('input_number.s7_window8_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_top3:
           friendly_name: "Colmo 4"
-          unique_id: s7_window_top3
+          unique_id: frontend_s7_window_top3
           value_template: "{{ states('input_number.s7_window9_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
       frontend_s7_window_top4:
           friendly_name: "Colmo 3"
-          unique_id: s7_window_top4
+          unique_id: frontend_s7_window_top4
           value_template: "{{ states('input_number.s7_window10_position')|int }}"
           unit_of_measurement: "%"
           icon_template: mdi:percent
@@ -1276,9 +1276,7 @@ sensor:
             FALLING
           {% elif is_state('binary_sensor.s8_temp_falling', 'off') and is_state('binary_sensor.s8_temp_rising', 'on') %}
             RISING
-          {% endif %}
-      
-      
+          {% endif %}    
       w_wind_intensity_frontend:
         value_template: >
           {% if states('sensor.ws_wind_speed_sensor')|int > 0 %}
@@ -1304,19 +1302,18 @@ sensor:
           {% endif %}
       w_rain_intensity_frontend: #TODO: sistemare con parametro ambientale
         value_template: >
-          {% if states('sensor.ws_rain_sensor')|int == 0 %} 
+          {% if states('sensor.ws_rain_sensor')|float == 0 %} 
             ASSENTE
-          {% elif states('sensor.ws_rain_sensor')|int <= 10 %}
+          {% elif states('sensor.ws_rain_sensor')|float <= 10 %}
             PIOGGIA DEBOLE
           {% else %}
             TEMPORALE
-          {% endif %}
-          
+          {% endif %}     
       weather_index:
         value_template: >
-          {% if states('sensor.ws_rain_sensor')|int > 0 and states('sensor.ws_rain_sensor')|int <= 10 %}
+          {% if states('sensor.ws_rain_sensor')|float > 0 and states('sensor.ws_rain_sensor')|float <= 10 %}
             PIOGGIA DEBOLE
-          {% elif states('sensor.ws_rain_sensor')|int > 10 %}
+          {% elif states('sensor.ws_rain_sensor')|float > 10 %}
             TEMPORALE
           {% elif states('sensor.ws_solar_radiation_sensor')|int == 0 %}
             NOTTE
@@ -1422,7 +1419,7 @@ binary_sensor:
         friendly_name: Serra 7
         device_class: problem
         value_template: >
-          {% if states('binary_sensor.s7_blackout') == on or states('binary_sensor.s7_window_side_anomaly') == on or states('binary_sensor.s7_window_top_anomaly') == on %}
+          {% if states('binary_sensor.s7_blackout') == 'on' or states('binary_sensor.s7_window_side_anomaly') == 'on' or states('binary_sensor.s7_window_top_anomaly') == 'on' %}
             on
           {% else %}
             off
@@ -1431,10 +1428,24 @@ binary_sensor:
         friendly_name: Serra 8
         device_class: problem
         value_template: >
-          {% if states('binary_sensor.s8_blackout') == on or states('binary_sensor.s8_window_side_anomaly') == on or states('binary_sensor.s8_window_top_anomaly') == on %}
+          {% if states('binary_sensor.s8_blackout') == 'on' or states('binary_sensor.s8_window_side_anomaly') == 'on' or states('binary_sensor.s8_window_top_anomaly') == 'on' %}
             on
           {% else %}
             off
+          {% endif %}
+      s7_windows_top_open:
+        value_template: >
+          {% if is_state("sensor.frontend_s7_window_top1", "0") and is_state("sensor.frontend_s7_window_top2", "0") and is_state("sensor.frontend_s7_window_top3", "0") and is_state("sensor.frontend_s7_window_top4", "0")  %}
+            false
+          {% else %}
+            true
+          {% endif %}
+      s8_windows_top_open:
+        value_template: >
+          {% if is_state("sensor.frontend_s8_window_top1", "0") and is_state("sensor.frontend_s8_window_top2", "0") %}
+            false
+          {% else %}
+            true
           {% endif %}
   - platform: trend
     sensors:
@@ -1858,7 +1869,7 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.s7_state
-        to: on
+        to: "on"
         for: "00:01:00"
     action:
       - event: HA_EVENT
@@ -1941,7 +1952,7 @@ automation:
       - platform: state
         entity_id: sensor.w_rain_state
         to: WE_RAINING
-        for: "00:01:00"
+        for: "00:00:10"
     action:
       - event: HA_EVENT
         event_data:
@@ -2001,6 +2012,34 @@ automation:
           openCloseTime: 
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
+  - alias: Alert Pioggia - Conferma chiusura S7
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.s7_windows_top_open
+        to: "off"
+    condition: 
+      - condition: state
+        entity_id: "sensor.w_rain_state"
+        state: "WE_RAINING"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.s7_windows_top_open
+          threshold: "off"
+  - alias: Alert Pioggia - Conferma chiusura S8
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.s8_windows_top_open
+        to: "off"
+    condition: 
+      - condition: state
+        entity_id: "sensor.w_rain_state"
+        state: "WE_RAINING"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.s8_windows_top_open
+          threshold: "off"
 
 ################################################
 ################################################
@@ -2080,6 +2119,13 @@ automation:
           openCloseTime: 
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"    
+ 
+
+################################################
+################################################
+###     Automazione su tempo
+################################################
+################################################ 
   - alias: Serra 7-8 Gestione finestre / periodi
     trigger: 
       - platform: time_pattern
@@ -2201,7 +2247,7 @@ automation:
   - alias: Leggi dati da stazione meteo
     trigger:
       - platform: time_pattern
-        seconds: "59"
+        seconds: "30"
     action:
       - event: HA_MANAGE_WEATHERSTATION
 
