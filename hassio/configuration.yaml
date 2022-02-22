@@ -1265,7 +1265,7 @@ sensor:
         unit_of_measurement: "°c"
       s8_soil_ec: #sensori per media di altri sensori
         friendly_name: "EC"
-        value_template: "{{ states('sensor.s8_soiltemperature_sensor') }}" 
+        value_template: "{{ states('sensor.sensor.s8_soilec_sensor') }}" 
         unit_of_measurement: "mS/cm"
       s8_temperature_trend:
         friendly_name: "Trend temperatura (30 min)"
