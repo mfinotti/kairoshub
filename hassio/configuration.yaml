@@ -1967,8 +1967,6 @@ automation:
         event_data:
           target: sensor.w_rain_state
           threshold: WE_RAINING
-      - event: s7WindowsTopClosedCheck_event
-      - event: s8WindowsTopClosedCheck_event
       - event: HA_MANAGE_WINDOWS3
         event_data: 
           event: "raining"
@@ -2022,7 +2020,11 @@ automation:
           entities: group.windows_greenhouse8
           openCloseTime: 
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
-            window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
+            window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"      
+      - event: s7WindowsTopClosedCheck_event
+      - event: s8WindowsTopClosedCheck_event
+
+
   - alias: Alert Pioggia - Conferma chiusura S7
     trigger:
       - platform: state
@@ -2053,6 +2055,7 @@ automation:
         event_type: s8WindowsTopClosedCheck_event
     condition: 
       condition: and
+      conditions: 
         - condition: state
           entity_id: "sensor.w_rain_state"
           state: "WE_RAINING"
