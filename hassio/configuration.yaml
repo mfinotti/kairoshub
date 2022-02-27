@@ -1100,6 +1100,10 @@ sensor:
     device_class: temperature
     platform: mqtt
     state_topic: "dummy_topic"
+  - name: s8_temperature_sensor2
+    device_class: temperature
+    platform: mqtt
+    state_topic: "shellies/s8Sensor1/ext_temperature/0"
   - name: s8_hic_sensor
     device_class: temperature
     platform: mqtt
@@ -1245,7 +1249,12 @@ sensor:
           icon_template: mdi:percent
       s8_temperature: #sensori per media di altri sensori
         friendly_name: "Temperatura Serra 8"
-        value_template: "{{ states('sensor.s8_temperature_sensor') }}"
+        value_template: >-
+          {% if is_state('sensor.s8_temperature_sensor', 'unknown') %}
+            {{ states('sensor.s8_temperature_sensor2') }}
+          {% else %}
+            {{ states('sensor.s8_temperature_sensor') }}
+          {% endif %}
         unit_of_measurement: "°c"
       s8_humidity: #sensori per media di altri sensori
         friendly_name: "Umidità Serra 8"
@@ -1958,6 +1967,8 @@ automation:
         event_data:
           target: sensor.w_rain_state
           threshold: WE_RAINING
+      - event: s7WindowsTopClosedCheck_event
+      - event: s8WindowsTopClosedCheck_event
       - event: HA_MANAGE_WINDOWS3
         event_data: 
           event: "raining"
@@ -2017,10 +2028,17 @@ automation:
       - platform: state
         entity_id: binary_sensor.s7_windows_top_open
         to: "off"
+      - platform: event
+        event_type: s7WindowsTopClosedCheck_event
     condition: 
-      - condition: state
-        entity_id: "sensor.w_rain_state"
-        state: "WE_RAINING"
+      condition: and
+      conditions: 
+        - condition: state
+          entity_id: "sensor.w_rain_state"
+          state: "WE_RAINING"
+        - condition: state
+          entity_id: "binary_sensor.s7_windows_top_open"
+          state: "off"
     action:
       - event: HA_EVENT
         event_data:
@@ -2031,10 +2049,16 @@ automation:
       - platform: state
         entity_id: binary_sensor.s8_windows_top_open
         to: "off"
+      - platform: event
+        event_type: s8WindowsTopClosedCheck_event
     condition: 
-      - condition: state
-        entity_id: "sensor.w_rain_state"
-        state: "WE_RAINING"
+      condition: and
+        - condition: state
+          entity_id: "sensor.w_rain_state"
+          state: "WE_RAINING"
+        - condition: state
+          entity_id: "binary_sensor.s8_windows_top_open"
+          state: "off"
     action:
       - event: HA_EVENT
         event_data:
