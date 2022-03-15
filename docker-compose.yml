@@ -3,20 +3,41 @@ services:
   kairoshub:
     container_name: kairoshub
     image: kairoshub:2021.11
+    volumes:
+      - /home/pi/workspace/kairoshub/hassio/configuration.yaml:/config/configuration.yaml
+      - /home/pi/workspace/hakairos-configuration:/config/hakairos-configuration
+      - /opt/certs/kafka:/opt/ha-cert
     environment:
       - TZ=Europe/Rome
+    ports:
+      - "8123:8123"
     restart: always
     depends_on:
       - mqtt
   mqtt:
     container_name: mqtt_local
     image: eclipse-mosquitto
+    volumes:
+      - /opt/mosquitto/config:/mosquitto/config
+      - /opt/mosquitto/log:/mosquitto/log
+      - /opt/mosquitto/data:/mosquitto/data
     ports:
       - "1884:1884"
       - "9001:9001"
+    restart: always
   appdaemon:
     container_name: appdaemon
     image: appdaemon:4.1.0
+    volumes:
+      - /home/pi/workspace/hakairos-configuration/appdaemon:/conf
     entrypoint: ["appdaemon", "-c", "/conf"]
     ports:
       - "5050:5050"
+    restart: always
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
