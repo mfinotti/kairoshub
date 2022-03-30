@@ -1,10 +1,11 @@
 version: "3.9"
 services:
-  kairoshub:
-    container_name: kairoshub
+  kairoshome:
+    container_name: kairoshome_202203
     volumes:
       - D:\workspace\projects\python\kairoshub\hassio\configuration.yaml:/config/configuration.yaml
       - D:\workspace\projects\python\hakairos-configuration:/config/hakairos-configuration
+      - D:\workspace\projects\python\hakairos-configuration\frontend\lovelace-kairoshome.yaml:/config/lovelace-kairoshome.yaml
       - D:\workspace\data\certs\LS_Kafka\certs:/opt/ha-cert
     environment:
       - TZ=Europe/Rome

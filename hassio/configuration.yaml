@@ -4,13 +4,30 @@ default_config:
 python_script:
 
 recorder:
-  purge_keep_days: 21
+  purge_keep_days: 7
   db_url: sqlite:////config/home-assistant_v2.db
 
 ### HA FRONTENDS
 frontend:
-  themes: !include_dir_merge_named hakairos-configuration/themes
+  themes: !include_dir_merge_named themes
 
+lovelace:
+  mode: storage
+  resources:
+    - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+      type: module
+    - url: /hacsfiles/lovelace-time-picker-card/time-picker-card.js
+      type: module
+  dashboards:
+    lovelace-kairoshub:
+      mode: yaml
+      title: Home
+      icon: mdi:help
+      show_in_sidebar: true
+      filename: lovelace-kairoshome.yaml
+  
 #### HA Custom Events extension 
 #### including configuration files
 ha-custom-events: !include_dir_merge_named hakairos-configuration/hacustomevents/
@@ -25,7 +42,7 @@ input_text:
     name: Identificativo Sistema
     initial: "numberToChange"
   system_name: 
-    name: Nome impianto
+    name: Casa
 
 ##### input number entities
 input_number:
@@ -35,11 +52,418 @@ input_number:
     min: 1
     max: 24
     step: 1
+  temperature_period1:
+    min: 18
+    max: 30
+    step: 0.5
+  temperature_period2:
+    min: 18
+    max: 30
+    step: 0.5
+  temperature_period3:
+    min: 18
+    max: 30
+    step: 0.5
+  temperature_period4:
+    min: 18
+    max: 30
+    step: 0.5
     
+##### datetime entities
+input_datetime:
+  ###############################################
+  #           Monday          
+  ###############################################
+  thermostat_monday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_monday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_monday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_monday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_monday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_monday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_monday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_monday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  ###############################################
+  #           Tuesday          
+  ###############################################
+  thermostat_tuesday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_tuesday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_tuesday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_tuesday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_tuesday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_tuesday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_tuesday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_tuesday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  ###############################################
+  #           Wednesday          
+  ###############################################
+  thermostat_wednesday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_wednesday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_wednesday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_wednesday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_wednesday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_wednesday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_wednesday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_wednesday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  ###############################################
+  #           Thursday          
+  ###############################################
+  thermostat_thursday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_thursday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_thursday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_thursday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_thursday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_thursday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_thursday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_thursday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  ###############################################
+  #           Friday          
+  ###############################################
+  thermostat_friday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_friday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_friday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_friday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_friday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_friday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_friday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_friday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  ###############################################
+  #           Saturday          
+  ###############################################
+  thermostat_saturday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_saturday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_saturday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_saturday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_saturday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_saturday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_saturday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_saturday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  ###############################################
+  #           Sunday          
+  ###############################################
+  thermostat_sunday_on_period1:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_sunday_off_period1:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_sunday_on_period2:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_sunday_off_period2:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_sunday_on_period3:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_sunday_off_period3:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+  thermostat_sunday_on_period4:
+    name: Accensione
+    has_date: false
+    has_time: true
+  thermostat_sunday_off_period4:
+    name: Spegnimento
+    has_date: false
+    has_time: true
+
+
 ##### input boolean entities 
 input_boolean:
   kafka_integration:
     initial: true
+  at_home:
+    name: In Casa
+  night: 
+    name: Notte
+  heater_auto:
+    name: Riscaldamento auto   #si calcola dai programmi attivi 
+  heater_program1:
+    name: Programma 1
+  heater_program2:
+    name: Programma 2
+  heater_program3:
+    name: Programma 3
+  heater_program4:
+    name: Programma 4
+  thermostat_monday:
+    name: Lunedì
+  thermostat_tuesday:
+    name: Martedì
+  thermostat_wednesday:
+    name: Mercoledì
+  thermostat_thursday:
+    name: Giovedì
+  thermostat_friday:
+    name: Venerdì
+  thermostat_saturday:
+    name: Sabato
+  thermostat_sunday:
+    name: Domenica
+
+#thermostat
+# Example configuration.yaml entry
+climate:
+  - platform: generic_thermostat
+    name: Riscaldamento
+    heater: switch.sw_thermostat
+    target_sensor: sensor.temperatura
+    min_temp: 10
+    max_temp: 30
+    ac_mode: false
+    min_cycle_duration:
+      seconds: 5
+    initial_hvac_mode: "off"
+
+#switch thermostat
+switch:
+  - platform: mqtt
+    name: sw_thermostat
+    unique_id: sw_thermostat
+    state_topic: "shellies/TH02/relay/0"
+    command_topic: "shellies/TH02/relay/0/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+    
+
+#sensors
+sensor: 
+  - platform: time_date
+    display_options:
+      - 'date_time_iso'
+  - platform: time_date
+    display_options:
+      - 'date'
+  - platform: time_date
+    display_options:
+      - 'time'
+  
+  - name: dayzone_temperature
+    platform: mqtt
+    state_topic: "shellies/TH01/ext_temperature/0"
+  - name: dayzone_humidity
+    platform: mqtt
+    state_topic: "shellies/TH01/ext_humidity/0"
+  - name: nightzone_temperature
+    platform: mqtt
+    state_topic: "shellies/TH02/ext_temperature/0"
+  - name: nightzone_humidity
+    platform: mqtt
+    state_topic: "shellies/TH02/ext_humidity/0"
+
+  #dayzone, nightzone average temperature / humidity value
+  - platform: min_max
+    name: Temperatura
+    type: mean
+    entity_ids:
+      - sensor.dayzone_temperature
+      - sensor.nightzone_temperature
+  - platform: min_max
+    name: Umidità
+    type: mean
+    entity_ids:
+      - sensor.dayzone_humidity
+      - sensor.nightzone_humidity
+
+  #shelly EM
+  - platform: mqtt
+    name: "EM_ch1"
+    state_topic: "shellies/EM01/emeter/0/power"
+    value_template: "{{ value }}"
+    unit_of_measurement : "Watt"
+    icon: mdi:speedometer
+  - platform: mqtt
+    name: "EM_ch2"
+    state_topic: "shellies/EM01/emeter/1/power"
+    value_template: "{{ value }}"
+    unit_of_measurement : "Watt"
+    icon: mdi:speedometer
+  - platform: template
+    sensors:
+      shelly_em_assorbimento:
+        friendly_name: "Assorbimento"
+        value_template: '{{ (states("sensor.em_ch1")|float(default=0) + states("sensor.em_ch2")|float(default=0))|float|round(1) }}'
+        unit_of_measurement : "Watt"
+        icon: mdi:speedometer
+  #accumulatori
+  - platform: integration
+    source: sensor.em_ch1
+    name: "EM Consumo ch1"
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    source: sensor.em_ch2
+    name: "EM Consumo ch2"
+    unit_prefix: k
+    round: 2
+  - platform: template
+    sensors:
+      em_consumo:
+        friendly_name: "EM Consumo"
+        value_template: '{{ (states("sensor.em_consumo_ch1")|float(default=0) + states("sensor.em_consumo_ch2")|float(default=0))|float|round(1) }}'
+        unit_of_measurement : "Watt"
+        icon_template: mdi:speedometer
+  
+  
+#contabilizzatori
+utility_meter:
+  shelly_1pm_consumo_mensile:
+    source: sensor.em_consumo
+    cycle: monthly
+
 
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
