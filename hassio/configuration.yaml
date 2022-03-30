@@ -1320,10 +1320,12 @@ sensor:
           {% endif %}     
       weather_index:
         value_template: >
-          {% if states('sensor.ws_rain_sensor')|float > 0 and states('sensor.ws_rain_sensor')|float <= 10 %}
+          {% if (states('sensor.ws_rain_sensor')|float > 0 and states('sensor.ws_rain_sensor')|float <= 10 ) %}
             PIOGGIA DEBOLE
           {% elif states('sensor.ws_rain_sensor')|float > 10 %}
             TEMPORALE
+          {% elif  states('binary_sensor.s7_rain_presence') == 'on' or states('binary_sensor.s8_rain_presence') == 'on'  %}
+            PIOGGIA DEBOLE
           {% elif states('sensor.ws_solar_radiation_sensor')|int == 0 %}
             NOTTE
           {% elif states('sensor.ws_solar_radiation_sensor')|int > 0 and states('sensor.ws_solar_radiation_sensor')|int < 150 %}
@@ -1422,6 +1424,21 @@ binary_sensor:
     qos: 0
     payload_on: "1"
     payload_off: "0"
+  
+  #environment sensors
+  - platform: mqtt #s8_window_top_anomaly
+    name: s7_rain_presence  #TODO: Da rivedere nomi e topic
+    state_topic: "shellies/environment_01/input/0"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+  - platform: mqtt #s8_window_top_anomaly
+    name: s8_rain_presence  #TODO: Da rivedere nomi e topic
+    state_topic: "shellies/environment_02/input/0"
+    qos: 0
+    payload_on: "1"
+    payload_off: "0"
+
   - platform: template
     sensors:
       s7_state:
@@ -1961,7 +1978,7 @@ automation:
       - platform: state
         entity_id: sensor.w_rain_state
         to: WE_RAINING
-        for: "00:00:10"
+        for: "00:00:15"
     action:
       - event: HA_EVENT
         event_data:
