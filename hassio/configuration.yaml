@@ -1028,6 +1028,9 @@ input_boolean:
   s7_window10_active:  
     name: "In funzione"
 
+  system_windows_recalibration_inprogress: 
+    name: Ricalibrazione finestre in corso
+
   #kairosgreen nodes group
   # platform: group
   # name: Stazioni Rilevamento S8
@@ -1250,7 +1253,7 @@ sensor:
       s8_temperature: #sensori per media di altri sensori
         friendly_name: "Temperatura Serra 8"
         value_template: >-
-          {% if is_state('sensor.s8_temperature_sensor', 'unknown') %}
+          {% if is_state('binary_sensor.kt_gateway_000001', 'off') or is_state('binary_sensor.kt_node_000001', 'off') %}
             {{ states('sensor.s8_temperature_sensor2') }}
           {% else %}
             {{ states('sensor.s8_temperature_sensor') }}
@@ -1499,6 +1502,12 @@ binary_sensor:
         max_samples: 60
         min_gradient: 0.0002
         device_class: heat
+  - platform: statistics
+    name: Andamento EC terreno serra 8
+    state_characteristic: average_linear
+    entity_id: sensor.s8_soilec_sensor
+    max_age:
+      days: 14
   - platform: group
     name: Stazioni Rilevamento S8
     device_class: connectivity
@@ -2041,7 +2050,6 @@ automation:
       - event: s7WindowsTopClosedCheck_event
       - event: s8WindowsTopClosedCheck_event
 
-
   - alias: Alert Pioggia - Conferma chiusura S7
     trigger:
       - platform: state
@@ -2248,45 +2256,145 @@ automation:
             window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
             window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
 
-  #Automazioni sulle finestre
-  - alias: Chiudi tutte le finestre
+  - alias: Monitor ponte radio
     trigger:
-      - platform: event
-        event_type: HA_CLOSE_WINDOWS
-      - platform: event
-        event_type: HA_CLOSE_WINDOWS_DUE_RAIN
-    action: #script chiusura finestre  
-      - event: HA_MANAGE_WINDOWS
-        event_data:  
-          event: "{{ trigger.event.event_type }}"
-          entities:
-            - sensor.s7_window_left_side1
-            - sensor.s7_window_front_sea_side_lx1
-            - sensor.s7_window_front_sea_side_rx1
-            - sensor.s7_window_right_side1
-            - sensor.s7_window_front_mountain_side_lx1
-            - sensor.s7_window_front_mountain_side_rx1
-            - sensor.s7_window_top1
-            - sensor.s7_window_top2
-            - sensor.s7_window_top3
-            - sensor.s7_window_top4
-#            - group.windows_greenhouse8
-          toPosition: 0
-          openCloseTime: "{{states('input_number.s7_open_close_time_window_top')|int}}"
-          #positionIncrease:
-          #positionDecrease:
-  - alias: Riposiziona tutte le finestre
-    trigger:
-      - platform: event
-        event_type: HA_WINDOWS_RESET_POSITION 
-      - platform: event
-        event_type: HA_STOPPED_RAINING
+      - platform: time_pattern
+        minutes: "/5"
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: '{{ as_timestamp(now()) - as_timestamp(states.binary_sensor.kt_gateway_000001.last_updated) | int > 300 }}'
+        - condition: state
+          entity_id: binary_sensor.kt_gateway_000001
+          state: 'on'
     action:
-      - service: mqtt.publish
-        data:
-          topic: "shellies/s7Sensor2/ext_temperature/0"
-          payload: "reset"
-           
+      - service: mqtt.publish 
+        data_template: 
+          topic:  'kairostech/nodes/kt_gateway_000001/online'
+          payload:  'off'
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.kt_gateway_000001
+          threshold: 'offline'
+
+  - alias: Monitor stazioni rilevamento
+    trigger:
+      - platform: time_pattern
+        minutes: "/5"
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: '{{ as_timestamp(now()) - as_timestamp(states.binary_sensor.kt_node_000001.last_updated) | int > 300 }}'
+        - condition: state
+          entity_id: binary_sensor.kt_node_000001
+          state: 'on'
+    action:
+      - service: mqtt.publish 
+        data_template: 
+          topic:  'kairostech/nodes/kt_node_000001/online'
+          payload:  'off'
+      - event: HA_EVENT
+        event_data:
+          target: binary_sensor.kt_node_000001
+          threshold: 'offline'
+
+  #Automazioni sulle finestre
+  - alias: Calibra finestre Serra 7
+    trigger:
+      - platform: time
+        at: "00:00:30"
+    action:
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
+          event: "windows_s7_recalibration"
+          periodActive: group.s7_periods_active
+          period: group.s7_periods
+          periodTemperature: group.s7_period_temperature
+          periodWindowTopMaxOpen: group.s7_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s7_period_window_low_max_open
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          entities: group.windows_greenhouse7
+          structure_orientation:
+            downwind: "{{ states('input_select.s7_downwind') }}"
+            upwind: "{{ states('input_select.s7_upwind') }}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_downwind_strong_window_low_max_open
+          openCloseTime: 
+            window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}"
+  
+  - alias: Calibra finestre Serra 8
+    trigger:
+      - platform: time
+        at: "00:00:30"
+    action:
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
+          event: "windows_s8_recalibration"
+          periodActive: group.s8_periods_active
+          period: group.s8_periods
+          periodTemperature: group.s8_period_temperature
+          periodWindowTopMaxOpen: group.s8_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s8_period_window_low_max_open
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          entities: group.windows_greenhouse8
+          structure_orientation:
+            downwind: "{{ states('input_select.s8_downwind') }}"
+            upwind: "{{ states('input_select.s8_upwind') }}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s8_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s8_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s8_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s8_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s8_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s8_period_wind_downwind_strong_window_low_max_open
+          openCloseTime: 
+            window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}"
+
+  - alias: SYSTEM windows calibration
+    trigger:
+      - platform: state
+        entity_id: input_boolean.system_windows_recalibration_inprogress
+        to: 'on'
+        for: "00:00:10"
+      - platform: state
+        entity_id: input_boolean.system_windows_recalibration_inprogress
+        to: 'off'
+        for: "00:00:10"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.system_windows_recalibration_inprogress
+          threshold: "{{ trigger.to_state.state }}"
+
+  - alias: SYSTEM windows calibration deadlock
+    trigger:
+      - platform: state
+        entity_id: input_boolean.system_windows_recalibration_inprogress
+        to: 'on'
+        for: "00:06:00"
+    action:
+      - event: HA_EVENT
+        event_data:
+          target: input_boolean.system_windows_recalibration_inprogress
+          threshold: 'deadlock'
+
   #automazioni sulla stazione meteo
   - alias: Leggi dati da stazione meteo
     trigger:
