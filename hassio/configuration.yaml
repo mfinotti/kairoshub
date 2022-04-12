@@ -1395,13 +1395,13 @@ binary_sensor:
     payload_off: "0"
   - platform: mqtt #s7_window_side_anomaly
     name: s7_window_side_anomaly  
-    state_topic: "shellies/s7Sensor1/input/2"
+    state_topic: "shellies/s7Sensor1/input/1"
     qos: 0
     payload_on: "1"
     payload_off: "0"
   - platform: mqtt #s7_window_top_anomaly
     name: s7_window_top_anomaly  
-    state_topic: "shellies/s7Sensor1/input/1"
+    state_topic: "shellies/s7Sensor1/input/2"
     qos: 0
     payload_on: "1"
     payload_off: "0"
@@ -1427,14 +1427,14 @@ binary_sensor:
   
   #environment sensors
   - platform: mqtt #s8_window_top_anomaly
-    name: s7_rain_presence  #TODO: Da rivedere nomi e topic
-    state_topic: "shellies/environment_01/input/0"
+    name: s7_rain_presence
+    state_topic: "shellies/s7Environment1/input/0"
     qos: 0
     payload_on: "1"
     payload_off: "0"
   - platform: mqtt #s8_window_top_anomaly
-    name: s8_rain_presence  #TODO: Da rivedere nomi e topic
-    state_topic: "shellies/environment_02/input/0"
+    name: s8_rain_presence
+    state_topic: "shellies/s8Environment1/input/0"
     qos: 0
     payload_on: "1"
     payload_off: "0"
@@ -1924,11 +1924,11 @@ automation:
         event_data:
           target: binary_sensor.s8_state
           threshold: > 
-            {% if states('binary_sensor.s8_blackout')%}
+            {% if is_state('binary_sensor.s8_blackout', 'on')%}
               blackout
-            {% elif states('binary_sensor.s8_window_side_anomaly') %}
+            {% elif is_state('binary_sensor.s8_window_side_anomaly', 'on') %}
               windows_side_anomaly
-            {% elif states('binary_sensor.s8_window_top_anomaly') %}
+            {% elif is_state('binary_sensor.s8_window_top_anomaly', 'on') %}
               windows_top_anomaly
             {% endif %}
       - service: service.turn_off
