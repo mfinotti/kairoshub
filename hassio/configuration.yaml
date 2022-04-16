@@ -2305,6 +2305,10 @@ automation:
     trigger:
       - platform: time
         at: "00:00:30"
+    condition: 
+      - condition: state
+        entity_id: "input_boolean.system_windows_recalibration_inprogress"
+        state: "off"
     action:
       - event: HA_MANAGE_WINDOWS3
         event_data: 
@@ -2337,7 +2341,11 @@ automation:
   - alias: Calibra finestre Serra 8
     trigger:
       - platform: time
-        at: "00:00:30"
+        at: "00:05:30"
+    condition: 
+      - condition: state
+        entity_id: "input_boolean.system_windows_recalibration_inprogress"
+        state: "off"
     action:
       - event: HA_MANAGE_WINDOWS3
         event_data: 
