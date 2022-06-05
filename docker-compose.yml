@@ -5,6 +5,7 @@ services:
     image: kairoshub:2021.11
     volumes:
       - /home/pi/workspace/kairoshub/hassio/configuration.yaml:/config/configuration.yaml
+      - /home/pi/workspace/hakairos-configuration/frontend/community:/config/www
       - /home/pi/workspace/hakairos-configuration:/config/hakairos-configuration
       - /home/pi/workspace/hakairos-configuration/www:/config/www
       - /opt/certs/kafka:/opt/ha-cert

@@ -9,17 +9,17 @@ recorder:
 
 ### HA FRONTENDS
 frontend:
-  themes: !include_dir_merge_named themes
+  themes: !include_dir_merge_named hakairos-configuration/frontend/community/themes/
 
 lovelace:
   mode: storage
   resources:
-    - url: /hacsfiles/button-card/button-card.js
+    - url: /local/time-picker-card/time-picker-card.js
       type: module
-    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+    - url: /local/weather-card/weather-card.js
       type: module
-    - url: /hacsfiles/lovelace-time-picker-card/time-picker-card.js
-      type: module
+    - url: /local/clockwork-card/clockwork-card.js
+      type: js
   dashboards:
     lovelace-kairoshub:
       mode: yaml
@@ -322,12 +322,12 @@ input_datetime:
 input_boolean:
   kafka_integration:
     initial: true
+  notification_to_read:
+    name: Notifiche da leggere
   at_home:
     name: In Casa
   night: 
-    name: Notte
-  heater_auto:
-    name: Riscaldamento auto   #si calcola dai programmi attivi 
+    name: Notte 
   heater_program1:
     name: Programma 1
   heater_program2:
@@ -350,6 +350,20 @@ input_boolean:
     name: Sabato
   thermostat_sunday:
     name: Domenica
+  tv_01:
+    name: Ambiente 1
+  tv_02:
+    name: Ambiente 2
+  tv_03:
+    name: Ambiente 3
+  tv_04:
+    name: Ambiente 4
+  tv_05:
+    name: Ambiente 5
+  tv_06:
+    name: Ambiente 6
+  tv_07:
+    name: Ambiente 7
 
 #thermostat
 # Example configuration.yaml entry
@@ -391,33 +405,321 @@ sensor:
     display_options:
       - 'time'
   
-  - name: dayzone_temperature
+  - name: dayzone_temperature_0
     platform: mqtt
     state_topic: "shellies/TH01/ext_temperature/0"
-  - name: dayzone_humidity
+  - name: home_humidity
     platform: mqtt
-    state_topic: "shellies/TH01/ext_humidity/0"
-  - name: nightzone_temperature
+    unit_of_measurement: "%"
+    state_topic: "kairostech/sensor/humidity/0"
+  
+  #TV01
+  - name: TV01_temp
     platform: mqtt
-    state_topic: "shellies/TH02/ext_temperature/0"
-  - name: nightzone_humidity
+    state_topic: "shellies/TV01/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV01_pos
     platform: mqtt
-    state_topic: "shellies/TH02/ext_humidity/0"
+    state_topic: "shellies/TV01/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV01_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV01/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV01_battery
+    platform: mqtt
+    state_topic: "shellies/TV01/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV01_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV01/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+
+  #TV02
+  - name: TV02_temp
+    platform: mqtt
+    state_topic: "shellies/TV02/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV02_pos
+    platform: mqtt
+    state_topic: "shellies/TV02/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV02_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV02/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV02_battery
+    platform: mqtt
+    state_topic: "shellies/TV02/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV02_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV02/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+
+  #TV03
+  - name: TV03_temp
+    platform: mqtt
+    state_topic: "shellies/TV03/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV03_pos
+    platform: mqtt
+    state_topic: "shellies/TV03/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV03_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV03/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV03_battery
+    platform: mqtt
+    state_topic: "shellies/TV03/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV03_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV03/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+
+  #TV04
+  - name: TV04_temp
+    platform: mqtt
+    state_topic: "shellies/TV04/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV04_pos
+    platform: mqtt
+    state_topic: "shellies/TV04/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV04_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV04/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV04_battery
+    platform: mqtt
+    state_topic: "shellies/TV04/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV04_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV04/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+
+  #TV05
+  - name: TV05_temp
+    platform: mqtt
+    state_topic: "shellies/TV05/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV05_pos
+    platform: mqtt
+    state_topic: "shellies/TV05/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV05_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV05/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV05_battery
+    platform: mqtt
+    state_topic: "shellies/TV05/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV05_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV05/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+
+  #TV06
+  - name: TV06_temp
+    platform: mqtt
+    state_topic: "shellies/TV06/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV06_pos
+    platform: mqtt
+    state_topic: "shellies/TV06/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV06_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV06/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV06_battery
+    platform: mqtt
+    state_topic: "shellies/TV06/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV06_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV06/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+  
+  #TV07
+  - name: TV07_temp
+    platform: mqtt
+    state_topic: "shellies/TV07/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].tmp.value }}"
+    payload_not_available: "offline"
+  - name: TV07_pos
+    platform: mqtt
+    state_topic: "shellies/TV07/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.thermostats[0].pos }}"
+    payload_not_available: "offline"
+  - name: TV07_target_temp
+    platform: mqtt
+    state_topic: "shellies/TV07/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.thermostats[0].target_t.value }}"
+    payload_not_available: "offline"
+  - name: TV07_battery
+    platform: mqtt
+    state_topic: "shellies/TV07/info"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json.bat.value }}"
+    payload_not_available: "offline"
+  - name: TV07_lastupdate
+    platform: mqtt
+    state_topic: "shellies/TV07/info"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json.time }}"
+    payload_not_available: "offline"
+
+  # - name: dayzone_humidity
+  #   platform: mqtt
+  #   state_topic: "shellies/TH01/ext_humidity/0"
+  # - name: nightzone_temperature
+  #   platform: mqtt
+  #   state_topic: "shellies/TH02/ext_temperature/0"
+  # - name: nightzone_humidity
+  #   platform: mqtt
+  #   state_topic: "shellies/TH02/ext_humidity/0"
 
   #dayzone, nightzone average temperature / humidity value
   - platform: min_max
     name: Temperatura
     type: mean
+    round_digits: 1
     entity_ids:
-      - sensor.dayzone_temperature
-      - sensor.nightzone_temperature
-  - platform: min_max
-    name: Umidità
-    type: mean
-    entity_ids:
-      - sensor.dayzone_humidity
-      - sensor.nightzone_humidity
+      - sensor.dayzone_temperature_0
+      - sensor.TV01_temp
+      - sensor.TV02_temp
+      - sensor.TV03_temp
+      - sensor.TV04_temp
+      - sensor.TV05_temp
+      - sensor.TV06_temp
+      - sensor.TV07_temp
 
+  - platform: template
+    sensors: 
+      tv01_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV01_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      tv02_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV02_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      tv03_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV03_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      tv04_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV04_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      tv05_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV05_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      tv06_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV06_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      tv07_state: 
+        value_template: >-
+          {% if (now() - states.sensor.TV07_lastupdate.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
+      th01_state: 
+        value_template: >-
+          {% if (now() - states.sensor.dayzone_temperature_0.last_changed).total_seconds() | round(0) > 3600 %}
+            offline
+          {% else %}
+            online
+          {% endif %}
   #shelly EM
   - platform: mqtt
     name: "EM_ch1"
@@ -457,13 +759,128 @@ sensor:
         unit_of_measurement : "Watt"
         icon_template: mdi:speedometer
   
-  
+binary_sensor:
+  - platform: template
+    sensors:
+      heater_auto:
+        friendly_name: "Programma caldo"
+        value_template: >-
+          {% if is_state('input_boolean.heater_program1', 'on') or is_state('input_boolean.heater_program1', 'on') or is_state('input_boolean.heater_program3', 'on') or is_state('input_boolean.heater_program4', 'on') %}
+            on
+          {% else %}
+            off
+          {% endif %}
+
 #contabilizzatori
 utility_meter:
   shelly_1pm_consumo_mensile:
     source: sensor.em_consumo
     cycle: monthly
 
+#covers
+cover:
+  - platform: mqtt
+    unique_id: "rs01"
+    name: "RS01"
+    command_topic: "shellies/RS01/roller/0/command"
+    position_topic: "shellies/RS01/roller/0/pos"
+    set_position_topic: "shellies/RS01/roller/0/command/pos"
+    availability_topic: "shellies/RS01/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "rs02"
+    name: "RS02"
+    command_topic: "shellies/RS02/roller/0/command"
+    position_topic: "shellies/RS02/roller/0/pos"
+    set_position_topic: "shellies/RS02/roller/0/command/pos"
+    availability_topic: "shellies/RS02/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "rs03"
+    name: "RS03"
+    command_topic: "shellies/RS03/roller/0/command"
+    position_topic: "shellies/RS03/roller/0/pos"
+    set_position_topic: "shellies/RS03/roller/0/command/pos"
+    availability_topic: "shellies/RS03/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "rs04"
+    name: "RS04"
+    command_topic: "shellies/RS04/roller/0/command"
+    position_topic: "shellies/RS04/roller/0/pos"
+    set_position_topic: "shellies/RS04/roller/0/command/pos"
+    availability_topic: "shellies/RS04/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "rs05"
+    name: "RS05"
+    command_topic: "shellies/RS05/roller/0/command"
+    position_topic: "shellies/RS05/roller/0/pos"
+    set_position_topic: "shellies/RS05/roller/0/command/pos"
+    availability_topic: "shellies/RS05/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
+  - platform: mqtt
+    unique_id: "rs06"
+    name: "RS06"
+    command_topic: "shellies/RS06/roller/0/command"
+    position_topic: "shellies/RS06/roller/0/pos"
+    set_position_topic: "shellies/RS06/roller/0/command/pos"
+    availability_topic: "shellies/RS06/online"
+    payload_available: "true"
+    payload_not_available: "false"
+    retain: false
+    payload_open: "open"
+    payload_close: "close"
+    payload_stop: "stop"
+    position_open: 100
+    position_closed: 0
+    optimistic: false
+    qos: 1
 
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
@@ -471,14 +888,237 @@ group:
   kafka_entity_align:
     name: "Kafka entity group"
     entities:
- 
+  rolershutters:
+    name: Tapparelle
+    entities: 
+      - cover.rs01
+      - cover.rs02
+      - cover.rs03
+      - cover.rs04
+      - cover.rs05
+      - cover.rs06
 
 #### include kairos core automations
 automation kairos: !include_dir_merge_list hakairos-configuration/automations/
 
 #### automations
 automation: 
+  - alias: HOME TO_OFF
+    trigger: 
+      - platform: state
+        entity_id: input_boolean.at_home
+        from: 'on'
+        to: 'off'
+        for: '00:00:05'
+    action: 
+      - service: cover.close_cover
+        target: 
+          entity_id: group.rolershutters
+      - event: HA_MANAGE_HOME_ON_OFF
+        event_data:
+          state: "{{ trigger.to_state.state }}"
+  - alias: HOME TO_ON
+    trigger: 
+      - platform: state
+        entity_id: input_boolean.at_home
+        from: 'off'
+        to: 'on'  
+    action: 
+      - event: HA_MANAGE_HOME_ON_OFF
+        event_data:
+          state: "{{ trigger.to_state.state }}"
+  - alias: AUTOMATION_H07
+    trigger: 
+      - platform: time
+        at: "07:00:00"
+    action: 
+      - service: input_boolean.turn_off
+        target: 
+          entity_id: input_boolean.night
+      - delay: 0:10
+      - event: HA_MANAGE_NIGHT_ON_OFF
+        event_data:
+          state: "{{states('input_boolean.night')}}"
+  - alias: AUTOMATION_H20
+    trigger: 
+      - platform: time
+        at: "20:00:00"
+    action: 
+      - service: input_boolean.turn_on
+        target: 
+          entity_id: input_boolean.night
+      - delay: 0:10
+      - event: HA_MANAGE_NIGHT_ON_OFF
+        event_data:
+          state: "{{states('input_boolean.night')}}"
 
+  - alias: Prog riscaldamento 1
+    trigger:
+      - platform: time_pattern
+        minutes: /1
+    condition: 
+      condition: and
+      conditions: 
+        - condition: state
+          entity_id: input_boolean.heater_program1
+          state: 'on'
+        - condition: state
+          entity_id: switch.sw_thermostat
+          state: 'off'
+    action: 
+      - event: HA_MANAGE_HEATER 
+        event_data: 
+          program: 1
+          temperature: "{{states('sensor.temperatura')}}"
+          on_off_heater: "{{states('switch.sw_thermostat')}}"
+          target_temp: "{{states('input_number.temperature_period1')}}"
+          on_off_time_monday:
+            on_time: "{{states('input_datetime.thermostat_monday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_monday_off_period1')}}"
+          on_off_time_tuesday:
+            on_time: "{{states('input_datetime.thermostat_tuesday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_tuesday_off_period1')}}"
+          on_off_time_wednesday:
+            on_time: "{{states('input_datetime.thermostat_wednesday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_wednesday_off_period1')}}"
+          on_off_time_thursday:
+            on_time: "{{states('input_datetime.thermostat_thursday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_thursday_off_period1')}}"
+          on_off_time_friday:
+            on_time: "{{states('input_datetime.thermostat_friday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_friday_off_period1')}}"
+          on_off_time_saturday:
+            on_time: "{{states('input_datetime.thermostat_saturday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_saturday_off_period1')}}"
+          on_off_time_sunday:
+            on_time: "{{states('input_datetime.thermostat_sunday_on_period1')}}"
+            off_time: "{{states('input_datetime.thermostat_sunday_off_period1')}}"
+  - alias: Prog riscaldamento 2
+    trigger:
+      - platform: time_pattern
+        minutes: /1
+    condition: 
+      condition: and
+      conditions: 
+        - condition: state
+          entity_id: input_boolean.heater_program2
+          state: 'on'
+        - condition: state
+          entity_id: switch.sw_thermostat
+          state: 'off'
+    action: 
+      - delay: "00:00:10"
+      - event: HA_MANAGE_HEATER 
+        event_data: 
+          program: 2
+          temperature: "{{states('sensor.temperatura')}}"
+          on_off_heater: "{{states('switch.sw_thermostat')}}"
+          target_temp: "{{states('input_number.temperature_period2')}}"
+          on_off_time_monday:
+            on_time: "{{states('input_datetime.thermostat_monday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_monday_off_period2')}}"
+          on_off_time_tuesday:
+            on_time: "{{states('input_datetime.thermostat_tuesday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_tuesday_off_period2')}}"
+          on_off_time_wednesday:
+            on_time: "{{states('input_datetime.thermostat_wednesday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_wednesday_off_period2')}}"
+          on_off_time_thursday:
+            on_time: "{{states('input_datetime.thermostat_thursday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_thursday_off_period2')}}"
+          on_off_time_friday:
+            on_time: "{{states('input_datetime.thermostat_friday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_friday_off_period2')}}"
+          on_off_time_saturday:
+            on_time: "{{states('input_datetime.thermostat_saturday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_saturday_off_period2')}}"
+          on_off_time_sunday:
+            on_time: "{{states('input_datetime.thermostat_sunday_on_period2')}}"
+            off_time: "{{states('input_datetime.thermostat_sunday_off_period2')}}"
+  - alias: Prog riscaldamento 3
+    trigger:
+      - platform: time_pattern
+        minutes: /1
+    condition: 
+      condition: and
+      conditions: 
+        - condition: state
+          entity_id: input_boolean.heater_program3
+          state: 'on'
+        - condition: state
+          entity_id: switch.sw_thermostat
+          state: 'off'
+    action: 
+      - delay: "00:00:20"
+      - event: HA_MANAGE_HEATER 
+        event_data: 
+          program: 3
+          temperature: "{{states('sensor.temperatura')}}"
+          on_off_heater: "{{states('switch.sw_thermostat')}}"
+          target_temp: "{{states('input_number.temperature_period3')}}"
+          on_off_time_monday:
+            on_time: "{{states('input_datetime.thermostat_monday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_monday_off_period3')}}"
+          on_off_time_tuesday:
+            on_time: "{{states('input_datetime.thermostat_tuesday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_tuesday_off_period3')}}"
+          on_off_time_wednesday:
+            on_time: "{{states('input_datetime.thermostat_wednesday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_wednesday_off_period3')}}"
+          on_off_time_thursday:
+            on_time: "{{states('input_datetime.thermostat_thursday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_thursday_off_period3')}}"
+          on_off_time_friday:
+            on_time: "{{states('input_datetime.thermostat_friday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_friday_off_period3')}}"
+          on_off_time_saturday:
+            on_time: "{{states('input_datetime.thermostat_saturday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_saturday_off_period3')}}"
+          on_off_time_sunday:
+            on_time: "{{states('input_datetime.thermostat_sunday_on_period3')}}"
+            off_time: "{{states('input_datetime.thermostat_sunday_off_period3')}}"
+  - alias: Prog riscaldamento 4
+    trigger:
+      - platform: time_pattern
+        minutes: /1
+    condition: 
+      condition: and
+      conditions: 
+        - condition: state
+          entity_id: input_boolean.heater_program4
+          state: 'on'
+        - condition: state
+          entity_id: switch.sw_thermostat
+          state: 'off'
+    action: 
+      - delay: "00:00:20"
+      - event: HA_MANAGE_HEATER 
+        event_data: 
+          program: 4
+          temperature: "{{states('sensor.temperatura')}}"
+          on_off_heater: "{{states('switch.sw_thermostat')}}"
+          target_temp: "{{states('input_number.temperature_period4')}}"
+          on_off_time_monday:
+            on_time: "{{states('input_datetime.thermostat_monday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_monday_off_period4')}}"
+          on_off_time_tuesday:
+            on_time: "{{states('input_datetime.thermostat_tuesday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_tuesday_off_period4')}}"
+          on_off_time_wednesday:
+            on_time: "{{states('input_datetime.thermostat_wednesday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_wednesday_off_period4')}}"
+          on_off_time_thursday:
+            on_time: "{{states('input_datetime.thermostat_thursday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_thursday_off_period4')}}"
+          on_off_time_friday:
+            on_time: "{{states('input_datetime.thermostat_friday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_friday_off_period4')}}"
+          on_off_time_saturday:
+            on_time: "{{states('input_datetime.thermostat_saturday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_saturday_off_period4')}}"
+          on_off_time_sunday:
+            on_time: "{{states('input_datetime.thermostat_sunday_on_period4')}}"
+            off_time: "{{states('input_datetime.thermostat_sunday_off_period4')}}"
 
 #### logger configuration
 logger:
@@ -487,7 +1127,3 @@ logger:
     homeassistant.components.cloud: debug
     custom_components.hakafka: debug
     custom_components.ha-custom-events: info
-
-shell_command:
-  entity_metrics: "python3 ./hakairos-configuration/scripts/entityMetrics.py"
-  system_metrics: "python3 ./hakairos-configuration/scripts/systemMetrics.py"
