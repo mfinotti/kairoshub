@@ -2071,6 +2071,7 @@ automation:
         event_data:
           target: binary_sensor.s7_windows_top_open
           threshold: "off"
+  
   - alias: Alert Pioggia - Conferma chiusura S8
     trigger:
       - platform: state
@@ -2092,6 +2093,69 @@ automation:
         event_data:
           target: binary_sensor.s8_windows_top_open
           threshold: "off"
+
+  - alias: Alert pioggia OFF
+    trigger:
+      - platform: state
+        entity_id: sensor.w_rain_state
+        from: WE_RAINING
+        to: WE_NOT_RAINING
+        for: "00:00:15"
+    action:
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
+          event: "stop_raining"
+          periodActive: group.s7_periods_active
+          period: group.s7_periods
+          periodTemperature: group.s7_period_temperature
+          periodWindowTopMaxOpen: group.s7_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s7_period_window_low_max_open
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          structure_orientation:
+            downwind: "{{ states('input_select.s7_downwind') }}"
+            upwind: "{{ states('input_select.s7_upwind') }}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s7_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s7_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s7_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s7_period_wind_downwind_strong_window_low_max_open
+          entities: group.windows_greenhouse7
+          openCloseTime: 
+            window_top: "{{states('input_number.s7_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s7_open_close_time_window_low')|int}}" 
+      - event: HA_MANAGE_WINDOWS3
+        event_data: 
+          event: "stop_raining"
+          periodActive: group.s8_periods_active
+          period: group.s8_periods
+          periodTemperature: group.s8_period_temperature
+          periodWindowTopMaxOpen: group.s8_period_window_top_max_open
+          periodWindowLowMaxOpen: group.s8_period_window_low_max_open
+          rainingSensor: "{{states('sensor.w_rain_state')}}"
+          structure_orientation:
+            downwind: "{{ states('input_select.s8_downwind') }}"
+            upwind: "{{ states('input_select.s8_upwind') }}"
+          periodWindWindowTopMaxOpen: 
+            downwind: 
+              moderate: group.s8_period_wind_downwind_moderate_window_top_max_open
+              strong: group.s8_period_wind_downwind_strong_window_top_max_open
+            upwind: 
+              moderate: group.s8_period_wind_upwind_moderate_window_top_max_open
+              strong: group.s8_period_wind_upwind_strong_window_top_max_open
+          periodWindWindowLowMaxOpen:
+            downwind: 
+              moderate: group.s8_period_wind_downwind_moderate_window_low_max_open
+              strong: group.s8_period_wind_downwind_strong_window_low_max_open
+          entities: group.windows_greenhouse8
+          openCloseTime: 
+            window_top: "{{states('input_number.s8_open_close_time_window_top')|int}}"
+            window_low: "{{states('input_number.s8_open_close_time_window_low')|int}}" 
 
 ################################################
 ################################################
