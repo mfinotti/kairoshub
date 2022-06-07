@@ -21,7 +21,7 @@ RUN wget https://github.com/mfinotti/hakafka/releases/latest/download/hakafka.zi
 RUN unzip hakafka.zip
 RUN mv hakafka-main hakafka
 
-RUN wget https://github.com/mfinotti/hakafka/releases/latest/download/ha-custom-events.zip
+RUN wget https://github.com/mfinotti/ha-custom-events/releases/latest/download/ha-custom-events.zip
 RUN unzip ha-custom-events.zip
 RUN mv ha-custom-events-main ha-custom-events
 
@@ -31,5 +31,7 @@ WORKDIR /config/custom_components/hacs
 RUN wget https://github.com/hacs/integration/releases/latest/download/hacs.zip
 RUN unzip hacs.zip 
 RUN rm hacs.zip
+
+WORKDIR /config/custom_components
 RUN rm hakafka.zip
 RUN rm ha-custom-events.zip
