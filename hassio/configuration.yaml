@@ -732,6 +732,17 @@ sensor:
           {% else %}
             online
           {% endif %}
+      pretty_date:
+        friendly_name: Data di oggi
+        value_template: >-
+          {% set today = states("sensor.date") %}
+          {% set arr_week_days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"] %}
+          {% set arr_months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"] %}
+          {% set week_day = as_timestamp(today) | timestamp_custom('%w') | int %}
+          {% set day = as_timestamp(today) | timestamp_custom('%d') %}
+          {% set month = as_timestamp(today) | timestamp_custom('%m') | int %}
+          {% set year = as_timestamp(today) | timestamp_custom('%Y') | int %}
+          {{ arr_week_days[week_day] }}, {{ day }} {{ arr_months[month-1] }} {{ year }}
   #shelly EM
   - platform: mqtt
     name: "EM_ch1"
