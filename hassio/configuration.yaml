@@ -1139,6 +1139,8 @@ automation:
         from: 'off'
         to: 'on'
         for: '00:00:10'
+      - platform: event
+        event_type: systemAssistanceOnCommand
     action:
       - service: mqtt.publish
         data_template: 
@@ -1153,6 +1155,8 @@ automation:
         from: 'on'
         to: 'off'
         for: '00:00:10'
+      - platform: event
+        event_type: systemAssistanceOffCommand
     action:
       - service: mqtt.publish
         data_template: 
