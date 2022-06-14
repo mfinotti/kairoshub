@@ -40,7 +40,6 @@ hakafka: !include_dir_merge_named hakairos-configuration/hakafka/
 input_text:
   system_code:
     name: Identificativo Sistema
-    initial: "numberToChange"
   system_name: 
     name: Casa
 
