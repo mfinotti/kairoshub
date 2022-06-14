@@ -322,6 +322,9 @@ input_datetime:
 input_boolean:
   kafka_integration:
     initial: true
+  assistance_request:
+    name: Richiedi Assistenza
+    icon: mdi:hand-coin-outline
   notification_to_read:
     name: Notifiche da leggere
   at_home:
@@ -405,6 +408,15 @@ sensor:
     display_options:
       - 'time'
   
+  - name: system_state
+    platform: mqtt
+    state_topic: "kairostech/state"
+
+  - name: kairoshub_sw_version
+    platform: mqtt
+    state_topic: "kairostech/kairoshub/version"
+
+
   - name: dayzone_temperature_0
     platform: mqtt
     state_topic: "shellies/TH01/ext_temperature/0"
@@ -1120,6 +1132,33 @@ automation:
             on_time: "{{states('input_datetime.thermostat_sunday_on_period4')}}"
             off_time: "{{states('input_datetime.thermostat_sunday_off_period4')}}"
 
+  - alias: Richiesta assistenza
+    trigger: 
+      - platform: state
+        entity_id: input_boolean.assistance_request
+        from: 'off'
+        to: 'on'
+        for: '00:00:10'
+    action:
+      - service: mqtt.publish
+        data_template: 
+          topic: 'kairostech/command'
+          payload: 'ASSISTANCE_START'
+
+
+  - alias: Richiesta assistenza FINE
+    trigger: 
+      - platform: state
+        entity_id: input_boolean.assistance_request
+        from: 'on'
+        to: 'off'
+        for: '00:00:10'
+    action:
+      - service: mqtt.publish
+        data_template: 
+          topic: 'kairostech/command'
+          payload: 'ASSISTANCE_STOP'
+
 #### logger configuration
 logger:
   default: info
@@ -1127,3 +1166,7 @@ logger:
     homeassistant.components.cloud: debug
     custom_components.hakafka: debug
     custom_components.ha-custom-events: info
+
+shell_command:
+  assistance_start: "python3 ./hakairos-configuration/scripts/assistance_start.py"
+  assistance_stop: "python3 ./hakairos-configuration/scripts/assistance_stop.py"

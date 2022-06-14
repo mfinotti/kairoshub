@@ -29,9 +29,12 @@ services:
     restart: always
   appdaemon:
     container_name: appdaemon
-    image: appdaemon:4.1.0
+    image: appdaemon:latest
     volumes:
       - /home/pi/workspace/hakairos-configuration/appdaemon:/conf
+    environment:  
+      - HA_URL=http://kairoshub:8123
+      - TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiMTI5MTVkNDk0MjU0YjIwYmY5YjA3MTM1N2ZiNTQxYSIsImlhdCI6MTY1NTEzOTExOCwiZXhwIjoxOTcwNDk5MTE4fQ.jwNauNOotFjLGeqP4Osmb-B2xgHJCZHwGCKP8uG4HFk
     entrypoint: ["appdaemon", "-c", "/conf"]
     ports:
       - "5050:5050"
