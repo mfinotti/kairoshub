@@ -395,8 +395,9 @@ switch:
     retain: false
     
 
-#sensors
+#region SENSOR 
 sensor: 
+  #region platform SENSOR TIME_DATE
   - platform: time_date
     display_options:
       - 'date_time_iso'
@@ -406,19 +407,37 @@ sensor:
   - platform: time_date
     display_options:
       - 'time'
-  
+  #endregion 
+
+  #region PLATFORM SENSOR MQTT
   - name: system_state
     platform: mqtt
     state_topic: "kairostech/state"
 
+  - name: system_state_detail
+    platform: mqtt
+    state_topic: "kairostech/state/detail"
+
   - name: kairoshub_sw_version
     platform: mqtt
     state_topic: "kairostech/kairoshub/version"
+    
+  - name: kairoshub_sw_release
+    platform: mqtt
+    state_topic: "kairostech/kairoshub/release"
 
+  - name: hakairos_configuration_sw_version
+    platform: mqtt
+    state_topic: "kairostech/hakairos-configuration/version"
+    
+  - name: hakairos_configuration_sw_release
+    platform: mqtt
+    state_topic: "kairostech/hakairos-configuration/release"
 
   - name: dayzone_temperature_0
     platform: mqtt
     state_topic: "shellies/TH01/ext_temperature/0"
+  
   - name: home_humidity
     platform: mqtt
     unit_of_measurement: "%"
@@ -647,6 +666,20 @@ sensor:
     unit_of_measurement: "°C"
     value_template: "{{ value_json.time }}"
     payload_not_available: "offline"
+ 
+  #shelly EM
+  - platform: mqtt
+    name: "EM_ch1"
+    state_topic: "shellies/EM01/emeter/0/power"
+    value_template: "{{ value }}"
+    unit_of_measurement : "Watt"
+  - platform: mqtt
+    name: "EM_ch2"
+    state_topic: "shellies/EM01/emeter/1/power"
+    value_template: "{{ value }}"
+    unit_of_measurement : "Watt"
+
+  #endregion
 
   # - name: dayzone_humidity
   #   platform: mqtt
@@ -658,6 +691,7 @@ sensor:
   #   platform: mqtt
   #   state_topic: "shellies/TH02/ext_humidity/0"
 
+  #region platform SENSOR MIN MAX
   #dayzone, nightzone average temperature / humidity value
   - platform: min_max
     name: Temperatura
@@ -672,7 +706,9 @@ sensor:
       - sensor.TV05_temp
       - sensor.TV06_temp
       - sensor.TV07_temp
+  #endregion
 
+  #region platform SENSOR TEMPLATE
   - platform: template
     sensors: 
       tv01_state: 
@@ -742,27 +778,18 @@ sensor:
           {% set month = as_timestamp(today) | timestamp_custom('%m') | int %}
           {% set year = as_timestamp(today) | timestamp_custom('%Y') | int %}
           {{ arr_week_days[week_day] }}, {{ day }} {{ arr_months[month-1] }} {{ year }}
-  #shelly EM
-  - platform: mqtt
-    name: "EM_ch1"
-    state_topic: "shellies/EM01/emeter/0/power"
-    value_template: "{{ value }}"
-    unit_of_measurement : "Watt"
-    icon: mdi:speedometer
-  - platform: mqtt
-    name: "EM_ch2"
-    state_topic: "shellies/EM01/emeter/1/power"
-    value_template: "{{ value }}"
-    unit_of_measurement : "Watt"
-    icon: mdi:speedometer
-  - platform: template
-    sensors:
-      shelly_em_assorbimento:
+      em_assorbimento:
         friendly_name: "Assorbimento"
         value_template: '{{ (states("sensor.em_ch1")|float(default=0) + states("sensor.em_ch2")|float(default=0))|float|round(1) }}'
         unit_of_measurement : "Watt"
-        icon: mdi:speedometer
-  #accumulatori
+      em_consumo:
+        friendly_name: "EM Consumo"
+        value_template: '{{ (states("sensor.em_consumo_ch1")|float(default=0) + states("sensor.em_consumo_ch2")|float(default=0))|float|round(1) }}'
+        unit_of_measurement : "Watt"
+        icon_template: mdi:speedometer
+  #endregion
+      
+  #region SENSOR INTEGRATION (accumulatori)
   - platform: integration
     source: sensor.em_ch1
     name: "EM Consumo ch1"
@@ -773,14 +800,27 @@ sensor:
     name: "EM Consumo ch2"
     unit_prefix: k
     round: 2
-  - platform: template
-    sensors:
-      em_consumo:
-        friendly_name: "EM Consumo"
-        value_template: '{{ (states("sensor.em_consumo_ch1")|float(default=0) + states("sensor.em_consumo_ch2")|float(default=0))|float|round(1) }}'
-        unit_of_measurement : "Watt"
-        icon_template: mdi:speedometer
-  
+  #endregion
+
+  #region SENSOR SYSTEMMONITOR (to be tested)
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+      - type: memory_use_percent
+      - type: swap_use_percent
+      - type: load_1m
+      - type: load_5m
+      - type: load_15m
+      - type: ipv4_address
+        arg: wlan0
+      - type: processor_use
+      - type: processor_temperature
+      - type: last_boot
+  #endregion
+
+#endregion SENSOR
+
+#region binary_sensor
 binary_sensor:
   - platform: template
     sensors:
@@ -792,6 +832,7 @@ binary_sensor:
           {% else %}
             off
           {% endif %}
+#endregion 
 
 #contabilizzatori
 utility_meter:
@@ -799,7 +840,7 @@ utility_meter:
     source: sensor.em_consumo
     cycle: monthly
 
-#covers
+#region covers
 cover:
   - platform: mqtt
     unique_id: "rs01"
@@ -903,6 +944,7 @@ cover:
     position_closed: 0
     optimistic: false
     qos: 1
+#endregion covers
 
 #### hassio groups
 #### use kakfa_entity_align groups for add all the entities you whant to include in the kafka align's procedure
@@ -1157,7 +1199,6 @@ automation:
           topic: 'kairostech/command'
           payload: 'ASSISTANCE_START'
 
-
   - alias: Richiesta assistenza FINE
     trigger: 
       - platform: state
@@ -1172,6 +1213,16 @@ automation:
         data_template: 
           topic: 'kairostech/command'
           payload: 'ASSISTANCE_STOP'
+
+  - alias: OTA UPDATE
+    trigger: 
+      - platform: time_pattern
+        hours: "/5"
+    action:
+      - service: mqtt.publish
+        data_template: 
+          topic: 'kairostech/command'
+          payload: 'TEST_OTA_UPDATE_FREQ' 
 
 #### logger configuration
 logger:
